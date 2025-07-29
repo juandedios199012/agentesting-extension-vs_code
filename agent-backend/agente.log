@@ -1,0 +1,9 @@
+[2025-07-22 05:48:24] [ERROR] Excepción LLM: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2025-07-22 05:48:50] [ERROR] Excepción LLM: Invalid URL 'None': No scheme supplied. Perhaps you meant https://None?
+[2025-07-24 02:11:16] [ERROR] La ruta 'tests/historias' no es una carpeta válida.
+[2025-07-24 02:24:22] [INFO] Carpeta de salida creada: ./salida
+[2025-07-24 02:24:22] [INFO] Analizando workspace completo: .
+[2025-07-24 02:24:27] [ERROR] Ocurrió un problema durante el análisis global: No module named 'azure'
+[2025-07-24 02:26:24] [INFO] Analizando workspace completo: .
+[2025-07-24 02:26:33] [WARNING] No se encontraron archivos relevantes en el workspace.
+[2025-07-24 02:26:33] [INFO] Análisis global del workspace finalizado.

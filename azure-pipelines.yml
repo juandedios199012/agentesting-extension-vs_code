@@ -1,0 +1,22 @@
+# Azure DevOps Pipeline para ejecutar el backend Python con secretos seguros
+# Ajusta los nombres de los pasos y rutas según tu estructura
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: agentesting-secrets  # Cambia por el nombre de tu Variable Group en Azure DevOps
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.11'
+
+- script: |
+    python --version
+    pip install -r agent-backend/requirements.txt
+    python agent-backend/cli.py
+  displayName: 'Instala dependencias y ejecuta backend'
