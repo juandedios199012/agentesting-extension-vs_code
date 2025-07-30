@@ -25,6 +25,11 @@ def cargar_secretos_keyvault():
         # Si la variable ya existe en el entorno (inyectada por Azure DevOps), no intentes cargarla de Key Vault
         if os.environ.get(secret_name):
             continue
+        # Si existe la variable con guion medio (ej: OPENAI-API-KEY), mapéala a guion bajo (ej: OPENAI_API_KEY)
+        alt_env = secret_name.replace('_', '-')
+        if os.environ.get(alt_env):
+            os.environ[secret_name] = os.environ[alt_env]
+            continue
         keyvault_name = secret_name.replace('_', '-').lower()  # Key Vault usa guion medio y minúsculas
         try:
             secret = client.get_secret(keyvault_name)
