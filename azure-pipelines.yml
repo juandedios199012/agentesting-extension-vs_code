@@ -16,11 +16,22 @@ steps:
     versionSpec: '3.11'
 
 - task: Bash@3
-  displayName: 'Debug variables'
+  displayName: 'Debug OPENAI variable'
   inputs:
     targetType: 'inline'
     script: |
-      echo "OPENAI-API-KEY: $OPENAI_API_KEY"
+      echo "OPENAI-API-KEY is set? -> ${#OPENAI_API_KEY}"
+
+# 🔍 Paso crítico: Mostrar el VSCE_TOKEN completo para revisar si hay espacios o errores
+- task: Bash@3
+  displayName: 'DEBUG: Mostrar contenido completo de VSCE_TOKEN (¡eliminar después de la prueba!)'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Contenido completo de VSCE_TOKEN:"
+      echo ">>>${VSCE_TOKEN}<<<"
+  env:
+    VSCE_TOKEN: $(VSCE_TOKEN)
 
 - task: Bash@3
   displayName: 'Instala dependencias y ejecuta backend'
@@ -36,13 +47,10 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      echo "Instalando vsce..."
       npm install -g @vscode/vsce
       npm install
       npm run compile
-      echo "Empaquetando extensión..."
       vsce package
-      echo "Publicando extensión..."
       vsce publish -p "$VSCE_TOKEN"
   env:
     VSCE_TOKEN: $(VSCE_TOKEN)
