@@ -39,7 +39,9 @@ steps:
     script: |
       python --version
       pip install -r agent-backend/requirements.txt
-      python agent-backend/cli.py
+      python agent-backend/cli.py "test prompt"
+  env:
+    OPENAI_API_KEY: $(OPENAI_API_KEY)
 
 - task: Bash@3
   displayName: 'Compila, empaqueta y publica extensión VS Code'

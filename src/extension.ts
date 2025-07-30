@@ -352,30 +352,22 @@ async function ejecutarAgentePython(prompt: string): Promise<string> {
     const { exec } = require('child_process');
     const fs = require('fs');
     const path = require('path');
+    
     // Usa la ruta interna del backend embebido en la extensión
     const extensionPath = vscode.extensions.getExtension('AgentestingMIA.agentestingmia')?.extensionPath || __dirname;
     const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'cli.py');
     const workspaceRoot = vscode.workspace.rootPath || process.cwd();
-    const historiasPath = path.join(workspaceRoot, 'temp_historias');
-    const salidaPath = path.join(workspaceRoot, 'temp_salida');
-    if (!fs.existsSync(historiasPath)) fs.mkdirSync(historiasPath);
-    if (!fs.existsSync(salidaPath)) fs.mkdirSync(salidaPath);
-    const historiaFile = path.join(historiasPath, 'historia.txt');
-    fs.writeFileSync(historiaFile, prompt);
+    
     return new Promise((resolve) => {
-        exec(`python "${agentPath}" --historias "${historiasPath}" --salida "${salidaPath}"`, { cwd: workspaceRoot }, (error: any, stdout: string, stderr: string) => {
+        // Las variables de entorno (como OPENAI_API_KEY) ya están disponibles del sistema
+        exec(`python "${agentPath}" "${prompt}"`, { 
+            cwd: workspaceRoot,
+            env: process.env // Usa todas las variables de entorno del sistema
+        }, (error: any, stdout: string, stderr: string) => {
             if (error) {
                 resolve(`Error: ${stderr || error.message}`);
             } else {
-                let respuesta = stdout;
-                try {
-                    const archivos = fs.readdirSync(salidaPath);
-                    if (archivos.length > 0) {
-                        const resultado = fs.readFileSync(path.join(salidaPath, archivos[0]), 'utf8');
-                        respuesta += '\n---\n' + resultado;
-                    }
-                } catch {}
-                resolve(respuesta);
+                resolve(stdout.trim());
             }
         });
     });

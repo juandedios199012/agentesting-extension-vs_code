@@ -4,23 +4,22 @@ contextual_model.py
 Entrena y ajusta el modelo LLM usando LangChain y el código fuente indexado.
 """
 
-
-from config_azure_keyvault import cargar_secretos_keyvault
+import os
 from langchain_openai import ChatOpenAI
 from langchain_community.llms import OpenAI
 from langchain.prompts import PromptTemplate
-
-
-
 import pickle
-import os
 
 
 class ContextualModel:
     def __init__(self, index, model_path='context_model.pkl'):
-        cargar_secretos_keyvault()  # Asegura que los secretos estén cargados antes de inicializar el modelo
+        # Verifica que la API key esté disponible
+        openai_api_key = os.getenv('OPENAI_API_KEY')
+        if not openai_api_key:
+            raise ValueError("OPENAI_API_KEY environment variable is not set")
+        
         self.index = index
-        self.llm = ChatOpenAI(temperature=0.2, model_name="gpt-3.5-turbo")
+        self.llm = ChatOpenAI(temperature=0.2, model_name="gpt-3.5-turbo", openai_api_key=openai_api_key)
         self.frameworks = ', '.join(index.get('frameworks', []))
         self.model_path = model_path
         self.training_data = []

@@ -2,7 +2,7 @@
   "name": "agentestingmia",
   "displayName": "AgentestingMIA",
   "description": "Agente de Automatización QA con IA para generar pruebas automáticas",
-  "version": "10.0.0",
+  "version": "11.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
