@@ -17,22 +17,17 @@ client = SecretClient(vault_url=KVUri, credential=credential)
 # Mapeo de nombres de secretos en Key Vault a variables de entorno del agente
 
 SECRET_NAMES = [
-    "JIRA_USER",
-    "JIRA_TOKEN",
-    "JIRA_URL",
-    "TESTRAIL_USER",
-    "TESTRAIL_TOKEN",
-    "TESTRAIL_URL",
     "OPENAI_API_KEY"
 ]
 
 def cargar_secretos_keyvault():
     for secret_name in SECRET_NAMES:
+        keyvault_name = secret_name.replace('_', '-').lower()  # Key Vault usa guion medio y minúsculas
         try:
-            secret = client.get_secret(secret_name.replace('_', '-'))
+            secret = client.get_secret(keyvault_name)
             os.environ[secret_name] = secret.value
         except Exception as e:
-            print(f"[KeyVault] No se pudo cargar el secreto {secret_name}: {e}")
+            print(f"[KeyVault] No se pudo cargar el secreto {keyvault_name}: {e}")
     # Verificación automática de la variable OPENAI_API_KEY
     if not os.environ.get("OPENAI_API_KEY"):
         print("[KeyVault] ADVERTENCIA: La variable OPENAI_API_KEY no está disponible en el entorno. El modelo OpenAI no funcionará.")
