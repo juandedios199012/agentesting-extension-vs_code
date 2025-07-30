@@ -1,4 +1,3 @@
-# Azure DevOps Pipeline para ejecutar el backend Python y publicar extensión VS Code
 trigger:
 - main
 
@@ -8,7 +7,6 @@ pool:
 variables:
   - name: OPENAI_API_KEY
     value: $(OPENAI_API_KEY)
-  # Asegúrate que esta variable esté definida como secreta en el entorno o en Variable Group
   - name: VSCE_TOKEN
     value: $(VSCE_TOKEN)
 
@@ -17,28 +15,34 @@ steps:
   inputs:
     versionSpec: '3.11'
 
-- script: |
-    echo "OPENAI-API-KEY: $OPENAI_API_KEY"
+- task: Bash@3
   displayName: 'Debug variables'
-  shell: bash
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "OPENAI-API-KEY: $OPENAI_API_KEY"
 
-- script: |
-    python --version
-    pip install -r agent-backend/requirements.txt
-    python agent-backend/cli.py
+- task: Bash@3
   displayName: 'Instala dependencias y ejecuta backend'
-  shell: bash
+  inputs:
+    targetType: 'inline'
+    script: |
+      python --version
+      pip install -r agent-backend/requirements.txt
+      python agent-backend/cli.py
 
-- script: |
-    echo "Instalando vsce y dependencias..."
-    npm install -g @vscode/vsce
-    npm install
-    npm run compile
-    echo "Empaquetando extensión..."
-    vsce package
-    echo "Publicando extensión VS Code..."
-    vsce publish -p "$VSCE_TOKEN"
+- task: Bash@3
   displayName: 'Compila, empaqueta y publica extensión VS Code'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Instalando vsce..."
+      npm install -g @vscode/vsce
+      npm install
+      npm run compile
+      echo "Empaquetando extensión..."
+      vsce package
+      echo "Publicando extensión..."
+      vsce publish -p "$VSCE_TOKEN"
   env:
     VSCE_TOKEN: $(VSCE_TOKEN)
-  shell: bash
