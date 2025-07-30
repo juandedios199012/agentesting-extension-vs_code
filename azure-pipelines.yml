@@ -7,8 +7,7 @@ pool:
 variables:
   - name: OPENAI_API_KEY
     value: $(OPENAI_API_KEY)
-  - name: VSCE_TOKEN
-    value: $(VSCE_TOKEN)
+  - group: agentesting-secrets
 
 steps:
 - task: UsePythonVersion@0
