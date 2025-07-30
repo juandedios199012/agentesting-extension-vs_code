@@ -7,7 +7,7 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 
 # Nombre del Key Vault (debe estar en variable de entorno AZURE_KEYVAULT_NAME)
-KEYVAULT_NAME = os.getenv("AZURE_KEYVAULT_NAME", "agentesting")
+KEYVAULT_NAME = os.getenv("AZURE_KEYVAULT_NAME", "AgentestingMIA")
 KVUri = f"https://{KEYVAULT_NAME}.vault.azure.net"
 
 # Inicializa el cliente de Azure Key Vault
