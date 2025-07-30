@@ -4,7 +4,7 @@ Genera clases, archivos y casos de prueba usando solo patrones del proyecto actu
 """
 
 
-from langchain_community.llms import OpenAI
+from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 import re
 
@@ -13,6 +13,7 @@ class CodeGenerator:
         self.index = index
         self.frameworks = index.get('frameworks', [])
         self.files = index.get('files', [])
+        # Usar la clase actualizada de OpenAI
         self.llm = OpenAI(temperature=0.2)
 
     def extract_patterns(self):

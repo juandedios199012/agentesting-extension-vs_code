@@ -6,7 +6,6 @@ Entrena y ajusta el modelo LLM usando LangChain y el código fuente indexado.
 import os
 import sys
 from langchain_openai import ChatOpenAI
-from langchain_community.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 import pickle
