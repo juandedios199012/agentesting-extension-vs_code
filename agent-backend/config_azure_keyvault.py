@@ -22,6 +22,9 @@ SECRET_NAMES = [
 
 def cargar_secretos_keyvault():
     for secret_name in SECRET_NAMES:
+        # Si la variable ya existe en el entorno (inyectada por Azure DevOps), no intentes cargarla de Key Vault
+        if os.environ.get(secret_name):
+            continue
         keyvault_name = secret_name.replace('_', '-').lower()  # Key Vault usa guion medio y minúsculas
         try:
             secret = client.get_secret(keyvault_name)
