@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
   "displayName": "AgentestingMIA",
-  "description": "🤖 Agente IA para Automatización QA - Genera código de pruebas personalizado con tu API key de OpenAI. Requiere configuración inicial.",
-  "version": "13.0.0",
+  "description": "Agente IA para Automatización QA - Genera código de pruebas personalizado con tu API key de OpenAI. Requiere configuración inicial.",
+  "version": "14.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"

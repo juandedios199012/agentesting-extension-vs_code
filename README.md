@@ -9,36 +9,35 @@
 
 ## 🚀 ¿Qué hace AgentestingMIA?
 
-AgentestingMIA es tu asistente personal de IA que genera código de pruebas automatizadas específicamente para tu proyecto. Solo describe lo que quieres probar y obtén código listo para usar con frameworks como Selenium, Pytest, y más.
+AgentestingMIA es tu **agente de IA inteligente** que no solo genera código de pruebas, sino que **crea archivos automáticamente** en tu proyecto. Como GitHub Copilot, pero especializado en QA Automation.
 
-**Ejemplos de lo que puedes generar:**
-- Pruebas de login automatizadas
-- Validación de formularios
-- Pruebas de API REST
-- Casos de navegación web
-- Suites de pruebas completas
+**✨ Capacidades del Agente:**
+- 🧠 **Genera código inteligente** basado en tu proyecto
+- 📁 **Crea archivos automáticamente** cuando es necesario
+- 🔍 **Analiza tu código existente** para sugerencias contextuales
+- 🚀 **Frameworks soportados:** Selenium, Pytest, Playwright, Cypress, y más
 
-## ⚡ Configuración Rápida (2 minutos)
+**Ejemplos de prompts:**
+- "Crea una clase LoginPage para Selenium" → Genera y crea el archivo automáticamente
+- "Genera tests de API para el endpoint /users" → Crea archivo de tests completo
+- "Crea Page Objects para mi e-commerce" → Genera múltiples archivos organizados
 
-### Paso 1: Instalar la extensión
-1. Busca "AgentestingMIA" en el marketplace de VS Code
-2. Haz clic en "Install"
+## ⚡ Configuración REQUERIDA (2 minutos)
 
-### Paso 2: Configurar tu API key de OpenAI
+> **📢 IMPORTANTE:** AgentestingMIA requiere tu propia API key de OpenAI para funcionar. Es gratis obtenerla y muy económica de usar (~$0.002 por consulta).
 
-**🔑 ¿Qué es esto?** Tu API key te permite acceder a GPT-3.5 para generar respuestas personalizadas.
+### Paso 1: Obtener tu API key de OpenAI
 
-**📍 ¿Dónde conseguir tu API key?**
 1. Ve a [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 2. Crea una cuenta gratuita (o inicia sesión)
 3. Haz clic en "Create new secret key"
 4. Copia la clave (comenzará con `sk-...`)
 
-**⚙️ ¿Cómo configurarla?**
+### Paso 2: Configurar tu API key
 
-**🏆 RECOMENDADO: Variables de Entorno (Más Seguro)**
+**🏆 MÉTODO RECOMENDADO: Variables de Entorno (Más Seguro)**
 
-*Windows:*
+**Windows:**
 1. **Win+R** → escribe `sysdm.cpl` → Enter
 2. **Pestaña "Opciones avanzadas"** → "Variables de entorno"
 3. **Agregar nueva variable del sistema:**
@@ -46,7 +45,7 @@ AgentestingMIA es tu asistente personal de IA que genera código de pruebas auto
    - Valor: `tu-api-key-aquí`
 4. **Reinicia VS Code** completamente
 
-*macOS/Linux:*
+**macOS/Linux:**
 ```bash
 echo 'export OPENAI_API_KEY="tu-api-key-aquí"' >> ~/.bashrc
 source ~/.bashrc
@@ -56,13 +55,33 @@ source ~/.bashrc
 1. Ve a `Archivo > Preferencias > Configuración` (o `Ctrl+,`)
 2. Busca "**AgentestingMIA**"
 3. Pega tu API key en el campo "**Openai Api Key**"
-4. ¡Listo! 🎉
 
-### Paso 3: ¡Empezar a usar!
-1. Abre la paleta de comandos (`Ctrl+Shift+P`)
-2. Busca "**Agentesting Automatización de Pruebas**"
-3. Escribe tu prompt: *"Crear pruebas de login para mi aplicación web"*
-4. ¡Obtén código personalizado al instante!
+### Paso 3: ¡Usar el Agente IA!
+1. **Instala la extensión** desde el VS Code Marketplace
+2. **Abre la paleta de comandos** (`Ctrl+Shift+P`)
+3. **Busca:** "**Agentesting Automatización de Pruebas**"
+4. **Escribe prompts inteligentes:**
+   - "Crea una clase Page Object para login con Selenium"
+   - "Genera tests de API REST para /users endpoint"
+   - "Crea suite de pruebas para formulario de registro"
+
+## 🤖 ¿Cómo funciona el Agente?
+
+AgentestingMIA **analiza tu prompt** y automáticamente:
+1. **Genera código inteligente** usando GPT-3.5
+2. **Detecta si necesita crear archivos** (como GitHub Copilot)
+3. **Crea automáticamente** los archivos en las rutas apropiadas
+4. **Te notifica** qué archivos se crearon
+
+**Ejemplo:**
+```
+👤 Tú: "Crea una clase LoginPage con Selenium"
+
+🤖 Agente: 
+- Genera el código de la clase
+- Crea automáticamente: pages/login_page.py
+- Notifica: ✅ Archivo creado automáticamente: pages/login_page.py
+```
 
 ## 💰 Costos
 

@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
     const disposableShowPanel = vscode.commands.registerCommand('Agentesting.showResultsPanel', () => {
         const panel = vscode.window.createWebviewPanel(
             'agenteQaResults',
-            'Resultados y Logs - Agente QA',
+            'AgentestingMIA - Agente IA',
             vscode.ViewColumn.One,
             {
                 enableScripts: true
@@ -53,42 +53,29 @@ export function activate(context: vscode.ExtensionContext) {
         panel.webview.onDidReceiveMessage(async message => {
             if (message.type === 'enviarPrompt') {
                 const respuesta = await ejecutarAgentePython(message.prompt);
-                panel.webview.postMessage({ type: 'respuestaAgente', respuesta });
-                // Si el agente devuelve una instrucción especial para crear/modificar archivo
-                // Ejemplo: respuesta = 'ARCHIVO: src/usuario.py\nCONTENIDO:\nclass Usuario { ... }'
+                
+                // Detectar si el agente quiere crear un archivo automáticamente
                 const match = respuesta.match(/ARCHIVO:\s*(.*)\nCONTENIDO:\n([\s\S]*)/);
                 if (match) {
                     const nombreArchivo = match[1].trim();
                     const contenido = match[2];
-                    await vscode.workspace.fs.writeFile(
-                        vscode.Uri.file(path.join(vscode.workspace.rootPath || '', nombreArchivo)),
-                        Buffer.from(contenido, 'utf8')
-                    );
-                    panel.webview.postMessage({ type: 'resultadoAccionArchivo', resultado: `Archivo creado/modificado automáticamente: ${nombreArchivo}` });
-                }
-            }
-            if (message.type === 'accionArchivo') {
-                let resultado = '';
-                try {
-                    if (!message.ruta) throw new Error('La ruta del archivo es obligatoria');
-                    const ruta = message.ruta as string;
-                    if (message.accion === 'crear') {
-                        const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
-                        await vscode.workspace.fs.writeFile(uri, Buffer.from(message.contenido || '', 'utf8'));
-                        resultado = `Archivo creado: ${ruta}`;
-                    } else if (message.accion === 'modificar') {
-                        const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
-                        await vscode.workspace.fs.writeFile(uri, Buffer.from(message.contenido || '', 'utf8'));
-                        resultado = `Archivo modificado: ${ruta}`;
-                    } else if (message.accion === 'eliminar') {
-                        const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
-                        await vscode.workspace.fs.delete(uri);
-                        resultado = `Archivo eliminado: ${ruta}`;
+                    try {
+                        await vscode.workspace.fs.writeFile(
+                            vscode.Uri.file(path.join(vscode.workspace.rootPath || '', nombreArchivo)),
+                            Buffer.from(contenido, 'utf8')
+                        );
+                        // Mostrar notificación en VS Code
+                        vscode.window.showInformationMessage(`✅ Archivo creado automáticamente: ${nombreArchivo}`);
+                        
+                        // Agregar información a la respuesta
+                        const respuestaConArchivo = `${respuesta}\n\n📁 **Archivo creado automáticamente:** ${nombreArchivo}`;
+                        panel.webview.postMessage({ type: 'respuestaAgente', respuesta: respuestaConArchivo });
+                    } catch (error) {
+                        panel.webview.postMessage({ type: 'respuestaAgente', respuesta: `${respuesta}\n\n❌ Error al crear archivo: ${error}` });
                     }
-                } catch (e) {
-                    resultado = `Error: ${(e as Error).message}`;
+                } else {
+                    panel.webview.postMessage({ type: 'respuestaAgente', respuesta });
                 }
-                panel.webview.postMessage({ type: 'resultadoAccionArchivo', resultado });
             }
         });
     });
@@ -264,20 +251,6 @@ function getWebviewContent(): string {
     <body>
         <div class="container">
             <h2>Agente QA Automation <span style="font-size:1.2rem; color:#fff; background:linear-gradient(90deg,#00e6fe,#007acc); border-radius:6px; padding:2px 10px;">AI</span></h2>
-            <div style="background:#1a1d23; border-radius:8px; padding:16px; margin-bottom:20px; border-left:4px solid #00e6fe;">
-                <p style="margin:0; color:#e0e0e0;">
-                    🔑 <strong>¿Primera vez?</strong> Configura tu API key de OpenAI:
-                </p>
-                <p style="margin:8px 0 0 0; color:#00e6fe; font-size:0.95rem;">
-                    <strong>🏆 RECOMENDADO:</strong> Variable de entorno <code>OPENAI_API_KEY</code> (Win+R → sysdm.cpl)
-                </p>
-                <p style="margin:4px 0 0 0; color:#888; font-size:0.9rem;">
-                    📌 Alternativa: <strong>Archivo > Preferencias > Configuración > "AgentestingMIA"</strong>
-                </p>
-                <p style="margin:8px 0 0 0; color:#888; font-size:0.9rem;">
-                    💡 Obtén tu API key gratis en: <code>platform.openai.com/api-keys</code>
-                </p>
-            </div>
             <div class="prompt-area">
                 <form id="promptForm">
                     <label for="prompt">Escribe tu historia, prompt o arrastra un archivo:</label><br>
@@ -291,18 +264,9 @@ function getWebviewContent(): string {
                 <button class="copy-btn" onclick="copyRespuesta()">Copiar</button>
                 <div id="respuesta" class="result-content">(Aquí aparecerá la respuesta...)</div>
             </div>
-            <div class="result-card">
-                <div class="result-header">Logs y resultados:</div>
-                <div id="logs" class="result-content">(Aquí se mostrarán los logs y resultados...)</div>
-            </div>
             <div class="history">
                 <div class="history-header">Historial de prompts</div>
                 <ul id="historyList" class="history-list"></ul>
-            </div>
-            <div style="margin-top:24px;">
-                <button onclick="crearArchivo()">Crear archivo</button>
-                <button onclick="modificarArchivo()">Modificar archivo</button>
-                <button onclick="eliminarArchivo()">Eliminar archivo</button>
             </div>
         </div>
         <script>
@@ -356,27 +320,20 @@ function getWebviewContent(): string {
                     reader.readAsText(files[0]);
                 }
             });
-            function crearArchivo() {
-                const ruta = prompt('Ruta del archivo a crear (ej: src/nuevo.txt):');
-                const contenido = prompt('Contenido inicial:');
-                vscode.postMessage({ type: 'accionArchivo', accion: 'crear', ruta, contenido });
-            }
-            function modificarArchivo() {
-                const ruta = prompt('Ruta del archivo a modificar:');
-                const contenido = prompt('Nuevo contenido:');
-                vscode.postMessage({ type: 'accionArchivo', accion: 'modificar', ruta, contenido });
-            }
-            function eliminarArchivo() {
-                const ruta = prompt('Ruta del archivo a eliminar:');
-                vscode.postMessage({ type: 'accionArchivo', accion: 'eliminar', ruta });
-            }
             window.addEventListener('message', event => {
                 const message = event.data;
                 if (message.type === 'respuestaAgente') {
                     document.getElementById('respuesta').textContent = message.respuesta;
-                }
-                if (message.type === 'resultadoAccionArchivo') {
-                    document.getElementById('logs').textContent = message.resultado;
+                    
+                    // Mostrar notificación si se creó un archivo automáticamente
+                    if (message.respuesta.includes('Archivo creado/modificado automáticamente:')) {
+                        // Resaltar la creación de archivos en la respuesta
+                        const respuestaElement = document.getElementById('respuesta');
+                        respuestaElement.style.borderLeft = '4px solid #00ff88';
+                        setTimeout(() => {
+                            respuestaElement.style.borderLeft = 'none';
+                        }, 3000);
+                    }
                 }
             });
         </script>
