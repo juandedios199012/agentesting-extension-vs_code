@@ -16,6 +16,11 @@ steps:
     versionSpec: '3.11'
 
 - script: |
+    echo "OPENAI-API-KEY: $OPENAI-API-KEY"
+    echo "OPENAI_API_KEY: $OPENAI_API_KEY"
+  displayName: 'Debug variables'
+
+- script: |
     python --version
     pip install -r agent-backend/requirements.txt
     python agent-backend/cli.py
