@@ -1,53 +1,123 @@
 
-# Agentesting - Extensión VS Code para Automatización QA
+# 🤖 AgentestingMIA - Agente IA para Automatización QA
 
-## Instalación y Primeros Pasos
+**Genera código de pruebas automáticas personalizadas usando inteligencia artificial.**
 
-1. **Instala la extensión desde el Marketplace o VSIX.**
-2. **Instala las dependencias Python del backend:**
-   - Abre la paleta de comandos (`Ctrl+Shift+P`)
-   - Ejecuta: `Agentesting: Instalar dependencias Python`
+![VS Code](https://img.shields.io/badge/VS%20Code-Extension-blue)
+![Python](https://img.shields.io/badge/Python-3.8+-green)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--3.5-orange)
 
-   - Esto instalará automáticamente todos los paquetes necesarios para el agente, incluyendo:
-     - `langchain`
-     - `langchain_community`
-     - `openai`
-     - `azure-identity`
-     - `azure-keyvault-secrets`
-     - `requests`
-   - No necesitas preocuparte por rutas ni archivos adicionales, solo ejecuta el comando y el entorno estará listo.
+## 🚀 ¿Qué hace AgentestingMIA?
 
+AgentestingMIA es tu asistente personal de IA que genera código de pruebas automatizadas específicamente para tu proyecto. Solo describe lo que quieres probar y obtén código listo para usar con frameworks como Selenium, Pytest, y más.
 
-> Alternativamente, puedes instalar manualmente:
-> ```powershell
-> pip install langchain openai azure-identity azure-keyvault-secrets requests
-> ```
+**Ejemplos de lo que puedes generar:**
+- Pruebas de login automatizadas
+- Validación de formularios
+- Pruebas de API REST
+- Casos de navegación web
+- Suites de pruebas completas
 
-3. **Abre el panel del agente:**
-   - Ejecuta: `Agentesting: Automatización de Pruebas`
-   - Usa el área de prompt para escribir historias, preguntas o arrastrar archivos.
-   - Visualiza respuestas, código generado y logs en tiempo real.
+## ⚡ Configuración Rápida (2 minutos)
 
-## Características
-- Generación de artefactos y código contextual usando IA.
-- Aprendizaje incremental: el agente mejora con el uso y entrenamiento.
-- UI moderna y elegante, con historial, drag & drop y acciones rápidas.
-- Integración total con tu workspace y frameworks detectados.
+### Paso 1: Instalar la extensión
+1. Busca "AgentestingMIA" en el marketplace de VS Code
+2. Haz clic en "Install"
 
-## Requisitos
-- Python 3.8+
-- Acceso a internet para modelos LLM (OpenAI)
+### Paso 2: Configurar tu API key de OpenAI
 
-## Soporte
-Para dudas, sugerencias o soporte, contacta al publisher o abre un issue en el repositorio.
+**🔑 ¿Qué es esto?** Tu API key te permite acceder a GPT-3.5 para generar respuestas personalizadas.
 
-### Configuración
-La extensión puede agregar configuraciones para rutas de historias, salida de artefactos y parámetros de ejecución del agente.
+**📍 ¿Dónde conseguir tu API key?**
+1. Ve a [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+2. Crea una cuenta gratuita (o inicia sesión)
+3. Haz clic en "Create new secret key"
+4. Copia la clave (comenzará con `sk-...`)
 
-## Known Issues
+**⚙️ ¿Cómo configurarla?**
 
-### Problemas conocidos
-- El agente Python debe estar correctamente configurado y accesible desde la extensión.
+**🏆 RECOMENDADO: Variables de Entorno (Más Seguro)**
+
+*Windows:*
+1. **Win+R** → escribe `sysdm.cpl` → Enter
+2. **Pestaña "Opciones avanzadas"** → "Variables de entorno"
+3. **Agregar nueva variable del sistema:**
+   - Nombre: `OPENAI_API_KEY`
+   - Valor: `tu-api-key-aquí`
+4. **Reinicia VS Code** completamente
+
+*macOS/Linux:*
+```bash
+echo 'export OPENAI_API_KEY="tu-api-key-aquí"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**📌 Alternativa: Configuración VS Code**
+1. Ve a `Archivo > Preferencias > Configuración` (o `Ctrl+,`)
+2. Busca "**AgentestingMIA**"
+3. Pega tu API key en el campo "**Openai Api Key**"
+4. ¡Listo! 🎉
+
+### Paso 3: ¡Empezar a usar!
+1. Abre la paleta de comandos (`Ctrl+Shift+P`)
+2. Busca "**Agentesting Automatización de Pruebas**"
+3. Escribe tu prompt: *"Crear pruebas de login para mi aplicación web"*
+4. ¡Obtén código personalizado al instante!
+
+## 💰 Costos
+
+- **Configuración:** Totalmente gratuita
+- **Uso:** ~$0.002 por consulta (muy económico)
+- **Tu control:** Solo pagas por lo que uses en tu cuenta OpenAI
+
+## 🎯 Ejemplos de Prompts
+
+```
+✅ "Crear pruebas automatizadas para login de usuario"
+✅ "Generar validaciones para formulario de registro"  
+✅ "Pruebas de API REST para endpoint de usuarios"
+✅ "Suite de pruebas para carrito de compras"
+✅ "Automatizar pruebas de navegación web"
+```
+
+## 🛠️ Características
+
+- 🧠 **IA Personalizada:** Respuestas específicas para tu proyecto
+- 📝 **Código Listo:** Copy-paste directo a tu proyecto
+- 🔍 **Análisis Contextual:** Detecta tus frameworks automáticamente
+- 📋 **Múltiples Frameworks:** Selenium, Pytest, TestNG, y más
+- 🎨 **Interfaz Moderna:** Panel elegante con historial integrado
+
+## 🔧 Requisitos
+
+- ✅ VS Code 1.102.0+
+- ✅ Python 3.8+ (instalado en tu sistema)
+- ✅ Cuenta OpenAI (gratuita) para API key
+
+## ❓ Preguntas Frecuentes
+
+**P: ¿Es seguro ingresar mi API key?**
+R: Sí, tu API key se guarda localmente en VS Code y solo tú tienes acceso.
+
+**P: ¿Cuánto cuesta usar OpenAI?**
+R: Aproximadamente $0.002 por consulta. OpenAI ofrece créditos gratuitos iniciales.
+
+**P: ¿Funciona sin internet?**
+R: No, requiere conexión para comunicarse con OpenAI y generar respuestas personalizadas.
+
+**P: ¿Qué pasa si no configuro mi API key?**
+R: La extensión te guiará paso a paso para configurarla. ¡Es muy fácil!
+
+## 🆘 Soporte
+
+¿Problemas o dudas?
+- 📧 Contacta al desarrollador
+- 🐛 [Reportar errores](https://github.com/juandedios199012/agentesting-extension-vs_code/issues)
+- 💡 [Sugerir mejoras](https://github.com/juandedios199012/agentesting-extension-vs_code/issues)
+
+---
+
+**¡Transforma tu proceso de testing con IA! 🚀**
 - Las credenciales LLM deben definirse en `.env` para funciones avanzadas.
 
 ## Release Notes

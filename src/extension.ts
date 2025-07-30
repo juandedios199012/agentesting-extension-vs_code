@@ -6,7 +6,6 @@ import * as path from 'path';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "Agentesting" is now active!');
@@ -24,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
     const disposableInstallDeps = vscode.commands.registerCommand('Agentesting.installPythonDeps', async () => {
         const terminal = vscode.window.createTerminal('Agente QA - Dependencias');
         terminal.show();
-        terminal.sendText('pip install langchain langchain_community openai azure-identity azure-keyvault-secrets requests');
+        terminal.sendText('pip install langchain langchain_community openai requests');
         vscode.window.showInformationMessage('Instalando dependencias Python del agente...');
     });
     context.subscriptions.push(disposableInstallDeps);
@@ -51,50 +50,79 @@ export function activate(context: vscode.ExtensionContext) {
         );
         panel.webview.html = getWebviewContent();
 
-    panel.webview.onDidReceiveMessage(async message => {
-        if (message.type === 'enviarPrompt') {
-            const respuesta = await ejecutarAgentePython(message.prompt);
-            panel.webview.postMessage({ type: 'respuestaAgente', respuesta });
-            // Si el agente devuelve una instrucción especial para crear/modificar archivo
-            // Ejemplo: respuesta = 'ARCHIVO: src/usuario.py\nCONTENIDO:\nclass Usuario { ... }'
-            const match = respuesta.match(/ARCHIVO:\s*(.*)\nCONTENIDO:\n([\s\S]*)/);
-            if (match) {
-                const nombreArchivo = match[1].trim();
-                const contenido = match[2];
-                await vscode.workspace.fs.writeFile(
-                    vscode.Uri.file(path.join(vscode.workspace.rootPath || '', nombreArchivo)),
-                    Buffer.from(contenido, 'utf8')
-                );
-                panel.webview.postMessage({ type: 'resultadoAccionArchivo', resultado: `Archivo creado/modificado automáticamente: ${nombreArchivo}` });
-            }
-        }
-        if (message.type === 'accionArchivo') {
-            let resultado = '';
-            try {
-                if (!message.ruta) throw new Error('La ruta del archivo es obligatoria');
-                const ruta = message.ruta as string;
-                if (message.accion === 'crear') {
-                    const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
-                    await vscode.workspace.fs.writeFile(uri, Buffer.from(message.contenido || '', 'utf8'));
-                    resultado = `Archivo creado: ${ruta}`;
-                } else if (message.accion === 'modificar') {
-                    const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
-                    await vscode.workspace.fs.writeFile(uri, Buffer.from(message.contenido || '', 'utf8'));
-                    resultado = `Archivo modificado: ${ruta}`;
-                } else if (message.accion === 'eliminar') {
-                    const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
-                    await vscode.workspace.fs.delete(uri);
-                    resultado = `Archivo eliminado: ${ruta}`;
+        panel.webview.onDidReceiveMessage(async message => {
+            if (message.type === 'enviarPrompt') {
+                const respuesta = await ejecutarAgentePython(message.prompt);
+                panel.webview.postMessage({ type: 'respuestaAgente', respuesta });
+                // Si el agente devuelve una instrucción especial para crear/modificar archivo
+                // Ejemplo: respuesta = 'ARCHIVO: src/usuario.py\nCONTENIDO:\nclass Usuario { ... }'
+                const match = respuesta.match(/ARCHIVO:\s*(.*)\nCONTENIDO:\n([\s\S]*)/);
+                if (match) {
+                    const nombreArchivo = match[1].trim();
+                    const contenido = match[2];
+                    await vscode.workspace.fs.writeFile(
+                        vscode.Uri.file(path.join(vscode.workspace.rootPath || '', nombreArchivo)),
+                        Buffer.from(contenido, 'utf8')
+                    );
+                    panel.webview.postMessage({ type: 'resultadoAccionArchivo', resultado: `Archivo creado/modificado automáticamente: ${nombreArchivo}` });
                 }
-            } catch (e) {
-                resultado = `Error: ${(e as Error).message}`;
             }
-            panel.webview.postMessage({ type: 'resultadoAccionArchivo', resultado });
-        }
-    });
+            if (message.type === 'accionArchivo') {
+                let resultado = '';
+                try {
+                    if (!message.ruta) throw new Error('La ruta del archivo es obligatoria');
+                    const ruta = message.ruta as string;
+                    if (message.accion === 'crear') {
+                        const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
+                        await vscode.workspace.fs.writeFile(uri, Buffer.from(message.contenido || '', 'utf8'));
+                        resultado = `Archivo creado: ${ruta}`;
+                    } else if (message.accion === 'modificar') {
+                        const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
+                        await vscode.workspace.fs.writeFile(uri, Buffer.from(message.contenido || '', 'utf8'));
+                        resultado = `Archivo modificado: ${ruta}`;
+                    } else if (message.accion === 'eliminar') {
+                        const uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', ruta));
+                        await vscode.workspace.fs.delete(uri);
+                        resultado = `Archivo eliminado: ${ruta}`;
+                    }
+                } catch (e) {
+                    resultado = `Error: ${(e as Error).message}`;
+                }
+                panel.webview.postMessage({ type: 'resultadoAccionArchivo', resultado });
+            }
+        });
     });
     context.subscriptions.push(disposableShowPanel);
 
+    // Comando para mostrar guía de configuración
+    const disposableSetupGuide = vscode.commands.registerCommand('Agentesting.showSetupGuide', () => {
+        vscode.window.showInformationMessage(
+            '🤖 AgentestingMIA - Configuración rápida:\n\n1️⃣ Obtén tu API key: platform.openai.com/api-keys\n2️⃣ Configúrala: Variable de entorno OPENAI_API_KEY (recomendado) o Archivo > Preferencias > Configuración > "AgentestingMIA"\n3️⃣ ¡Empieza a generar código de pruebas con IA!',
+            'Variables de Entorno',
+            'Configuración VS Code',
+            'Obtener API Key',
+            'Abrir Panel'
+        ).then(selection => {
+            if (selection === 'Variables de Entorno') {
+                vscode.window.showInformationMessage(
+                    'Configuración por Variables de Entorno (RECOMENDADO):\n\n1️⃣ Presiona Win+R\n2️⃣ Escribe: sysdm.cpl\n3️⃣ Pestaña "Opciones avanzadas"\n4️⃣ "Variables de entorno"\n5️⃣ Agregar nueva: OPENAI_API_KEY\n6️⃣ Reinicia VS Code',
+                    'Obtener API Key'
+                ).then(sel => {
+                    if (sel === 'Obtener API Key') {
+                        vscode.env.openExternal(vscode.Uri.parse('https://platform.openai.com/api-keys'));
+                    }
+                });
+            } else if (selection === 'Configuración VS Code') {
+                vscode.commands.executeCommand('workbench.action.openSettings', 'agentestingmia.openaiApiKey');
+            } else if (selection === 'Obtener API Key') {
+                vscode.env.openExternal(vscode.Uri.parse('https://platform.openai.com/api-keys'));
+            } else if (selection === 'Abrir Panel') {
+                vscode.commands.executeCommand('Agentesting.showResultsPanel');
+            }
+        });
+    });
+    context.subscriptions.push(disposableSetupGuide);
+}
 
 function getWebviewContent(): string {
     return `
@@ -236,6 +264,20 @@ function getWebviewContent(): string {
     <body>
         <div class="container">
             <h2>Agente QA Automation <span style="font-size:1.2rem; color:#fff; background:linear-gradient(90deg,#00e6fe,#007acc); border-radius:6px; padding:2px 10px;">AI</span></h2>
+            <div style="background:#1a1d23; border-radius:8px; padding:16px; margin-bottom:20px; border-left:4px solid #00e6fe;">
+                <p style="margin:0; color:#e0e0e0;">
+                    🔑 <strong>¿Primera vez?</strong> Configura tu API key de OpenAI:
+                </p>
+                <p style="margin:8px 0 0 0; color:#00e6fe; font-size:0.95rem;">
+                    <strong>🏆 RECOMENDADO:</strong> Variable de entorno <code>OPENAI_API_KEY</code> (Win+R → sysdm.cpl)
+                </p>
+                <p style="margin:4px 0 0 0; color:#888; font-size:0.9rem;">
+                    📌 Alternativa: <strong>Archivo > Preferencias > Configuración > "AgentestingMIA"</strong>
+                </p>
+                <p style="margin:8px 0 0 0; color:#888; font-size:0.9rem;">
+                    💡 Obtén tu API key gratis en: <code>platform.openai.com/api-keys</code>
+                </p>
+            </div>
             <div class="prompt-area">
                 <form id="promptForm">
                     <label for="prompt">Escribe tu historia, prompt o arrastra un archivo:</label><br>
@@ -342,7 +384,6 @@ function getWebviewContent(): string {
     </html>
     `;
 }
-}
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
@@ -358,11 +399,71 @@ async function ejecutarAgentePython(prompt: string): Promise<string> {
     const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'cli.py');
     const workspaceRoot = vscode.workspace.rootPath || process.cwd();
     
+    // Busca la API key en orden de prioridad:
+    // 1. Variable de entorno del sistema (más limpio y seguro)
+    // 2. Configuración de VS Code (backup)
+    let userApiKey = process.env.OPENAI_API_KEY;
+    if (!userApiKey) {
+        const config = vscode.workspace.getConfiguration('agentestingmia');
+        userApiKey = config.get<string>('openaiApiKey');
+    }
+    
+    // Si no hay API key configurada, muestra mensaje informativo
+    if (!userApiKey || !userApiKey.trim()) {
+        vscode.window.showErrorMessage(
+            '🔑 AgentestingMIA requiere tu API key de OpenAI para funcionar. ¡Configúrala fácilmente!',
+            'Variables de Entorno (Recomendado)', 
+            'Configuración VS Code',
+            'Obtener API Key'
+        ).then(selection => {
+            if (selection === 'Variables de Entorno (Recomendado)') {
+                vscode.window.showInformationMessage(
+                    'Configuración por Variables de Entorno (MÁS SEGURO):\n\n1️⃣ Presiona Win+R\n2️⃣ Escribe: sysdm.cpl\n3️⃣ Pestaña "Opciones avanzadas"\n4️⃣ "Variables de entorno"\n5️⃣ Agregar nueva: OPENAI_API_KEY\n6️⃣ Reinicia VS Code',
+                    'Obtener API Key'
+                ).then(sel => {
+                    if (sel === 'Obtener API Key') {
+                        vscode.env.openExternal(vscode.Uri.parse('https://platform.openai.com/api-keys'));
+                    }
+                });
+            } else if (selection === 'Configuración VS Code') {
+                vscode.commands.executeCommand('workbench.action.openSettings', 'agentestingmia.openaiApiKey');
+            } else if (selection === 'Obtener API Key') {
+                vscode.env.openExternal(vscode.Uri.parse('https://platform.openai.com/api-keys'));
+            }
+        });
+        
+        // Retorna mensaje explicativo incluso sin API key
+        return Promise.resolve(`🔑 **AgentestingMIA necesita tu API key de OpenAI**
+
+📝 **Tu solicitud:** "${prompt}"
+
+⚡ **Configuración RECOMENDADA (Variables de Entorno):**
+
+**Windows:**
+1. **Win+R** → escribe \`sysdm.cpl\`
+2. **Pestaña "Opciones avanzadas"** → "Variables de entorno"
+3. **Agregar nueva variable:**
+   - Nombre: \`OPENAI_API_KEY\`
+   - Valor: \`tu-api-key-aquí\`
+4. **Reiniciar VS Code**
+
+**Alternativa (VS Code):**
+- Archivo > Preferencias > Configuración > "AgentestingMIA"
+
+💰 **Costo:** ~$0.002 por consulta (muy económico)
+🧠 **Beneficios:** Variables de entorno son más seguras y limpias`);
+    }
+    
     return new Promise((resolve) => {
-        // Las variables de entorno (como OPENAI_API_KEY) ya están disponibles del sistema
+        // Prepara el entorno con la API key del usuario
+        const env = { 
+            ...process.env,
+            OPENAI_API_KEY: userApiKey || ''
+        };
+        
         exec(`python "${agentPath}" "${prompt}"`, { 
             cwd: workspaceRoot,
-            env: process.env // Usa todas las variables de entorno del sistema
+            env: env
         }, (error: any, stdout: string, stderr: string) => {
             if (error) {
                 resolve(`Error: ${stderr || error.message}`);

@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
   "displayName": "AgentestingMIA",
-  "description": "Agente de Automatización QA con IA para generar pruebas automáticas",
-  "version": "12.0.0",
+  "description": "🤖 Agente IA para Automatización QA - Genera código de pruebas personalizado con tu API key de OpenAI. Requiere configuración inicial.",
+  "version": "13.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
@@ -11,6 +11,23 @@
     "Testing",
     "Other"
   ],
+  "keywords": [
+    "testing",
+    "automation",
+    "qa",
+    "ai",
+    "openai",
+    "selenium",
+    "pytest"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juandedios199012/agentesting-extension-vs_code"
+  },
+  "homepage": "https://github.com/juandedios199012/agentesting-extension-vs_code#readme",
+  "bugs": {
+    "url": "https://github.com/juandedios199012/agentesting-extension-vs_code/issues"
+  },
   
   "main": "./out/extension.js",
   "activationEvents": [
@@ -21,8 +38,23 @@
       {
         "command": "Agentesting.showResultsPanel",
         "title": "Agentesting Automatización de Pruebas"
+      },
+      {
+        "command": "Agentesting.showSetupGuide",
+        "title": "AgentestingMIA: Guía de Configuración"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "AgentestingMIA",
+      "properties": {
+        "agentestingmia.openaiApiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Tu clave API de OpenAI para usar GPT-3.5 (requerida).\n\n**¿Cómo obtenerla?**\n\n1. Ve a [platform.openai.com/api-keys](https://platform.openai.com/api-keys)\n2. Crea una cuenta gratuita\n3. Genera una nueva clave secreta\n4. Cópiala aquí\n\n**Costo:** ~$0.002 por consulta",
+          "scope": "application"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run copy-backend",
