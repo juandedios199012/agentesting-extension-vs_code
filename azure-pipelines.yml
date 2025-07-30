@@ -26,3 +26,13 @@ steps:
     pip install -r agent-backend/requirements.txt
     python agent-backend/cli.py
   displayName: 'Instala dependencias y ejecuta backend'
+
+- script: |
+    npm install -g @vscode/vsce
+    npm install
+    npm run compile
+    vsce package
+    vsce publish -p $VSCE_TOKEN
+  displayName: 'Compila, empaqueta y publica extensión VS Code'
+  env:
+    VSCE_TOKEN: $(VSCE_TOKEN)
