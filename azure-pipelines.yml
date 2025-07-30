@@ -8,7 +8,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: agentesting-secrets  # Cambia por el nombre de tu Variable Group en Azure DevOps
+  - name: OPENAI_API_KEY
+    value: $(OPENAI_API_KEY)
 
 steps:
 - task: UsePythonVersion@0
