@@ -1,6 +1,4 @@
-# Azure DevOps Pipeline para ejecutar el backend Python con secretos seguros
-# Ajusta los nombres de los pasos y rutas según tu estructura
-
+# Azure DevOps Pipeline para ejecutar el backend Python y publicar extensión VS Code
 trigger:
 - main
 
@@ -10,6 +8,9 @@ pool:
 variables:
   - name: OPENAI_API_KEY
     value: $(OPENAI_API_KEY)
+  # Asegúrate que esta variable esté definida como secreta en el entorno o en Variable Group
+  - name: VSCE_TOKEN
+    value: $(VSCE_TOKEN)
 
 steps:
 - task: UsePythonVersion@0
@@ -17,22 +18,27 @@ steps:
     versionSpec: '3.11'
 
 - script: |
-    echo "OPENAI-API-KEY: $OPENAI-API-KEY"
-    echo "OPENAI_API_KEY: $OPENAI_API_KEY"
+    echo "OPENAI-API-KEY: $OPENAI_API_KEY"
   displayName: 'Debug variables'
+  shell: bash
 
 - script: |
     python --version
     pip install -r agent-backend/requirements.txt
     python agent-backend/cli.py
   displayName: 'Instala dependencias y ejecuta backend'
+  shell: bash
 
 - script: |
+    echo "Instalando vsce y dependencias..."
     npm install -g @vscode/vsce
     npm install
     npm run compile
+    echo "Empaquetando extensión..."
     vsce package
-    vsce publish -p $VSCE_TOKEN
+    echo "Publicando extensión VS Code..."
+    vsce publish -p "$VSCE_TOKEN"
   displayName: 'Compila, empaqueta y publica extensión VS Code'
   env:
     VSCE_TOKEN: $(VSCE_TOKEN)
+  shell: bash
