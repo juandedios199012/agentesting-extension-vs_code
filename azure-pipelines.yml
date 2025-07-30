@@ -48,6 +48,7 @@ steps:
     script: |
       npm install -g @vscode/vsce
       npm install
+      npm run copy-backend
       npm run compile
       vsce package
       vsce publish -p "$VSCE_TOKEN"

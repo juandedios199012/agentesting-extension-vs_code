@@ -353,8 +353,8 @@ async function ejecutarAgentePython(prompt: string): Promise<string> {
     const fs = require('fs');
     const path = require('path');
     // Usa la ruta interna del backend embebido en la extensión
-    const extensionPath = vscode.extensions.getExtension('Agentesting.agentesting')?.extensionPath || __dirname;
-    const agentPath = path.join(extensionPath, 'agent-backend', 'cli.py');
+    const extensionPath = vscode.extensions.getExtension('AgentestingMIA.agentestingmia')?.extensionPath || __dirname;
+    const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'cli.py');
     const workspaceRoot = vscode.workspace.rootPath || process.cwd();
     const historiasPath = path.join(workspaceRoot, 'temp_historias');
     const salidaPath = path.join(workspaceRoot, 'temp_salida');

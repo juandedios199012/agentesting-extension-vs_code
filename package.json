@@ -1,11 +1,14 @@
 {
-  "publisher": "AgentestingMIA",
-  "version": "9.0.0",
   "name": "agentestingmia",
+  "displayName": "AgentestingMIA",
+  "description": "Agente de Automatización QA con IA para generar pruebas automáticas",
+  "version": "10.0.0",
+  "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
   },
   "categories": [
+    "Testing",
     "Other"
   ],
   
@@ -22,9 +25,10 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run compile && npm run copy-backend",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "copy-backend": "node copy-backend.js",
+    "watch": "npm run copy-backend && tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test"
