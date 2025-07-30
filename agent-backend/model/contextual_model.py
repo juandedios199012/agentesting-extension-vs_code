@@ -8,6 +8,7 @@ import os
 from langchain_openai import ChatOpenAI
 from langchain_community.llms import OpenAI
 from langchain.prompts import PromptTemplate
+from langchain_core.messages import HumanMessage
 import pickle
 
 
@@ -50,18 +51,26 @@ class ContextualModel:
         context_examples = '\n'.join([
             f"Prompt: {ex['prompt']}\nRespuesta: {ex['response']}" for ex in self.training_data[-5:]
         ])
-        template = PromptTemplate(
-            input_variables=["prompt", "frameworks", "context_examples"],
-            template="""
-Eres un agente experto en QA Automation. El proyecto usa los siguientes frameworks: {frameworks}.
+        
+        # Construye el mensaje del sistema
+        system_message = f"""Eres un agente experto en QA Automation. El proyecto usa los siguientes frameworks: {self.frameworks}.
 Ejemplos previos de entrenamiento:
 {context_examples}
-Responde el siguiente prompt de forma contextual y específica al proyecto:
-{prompt}
-"""
-        )
-        final_prompt = template.format(prompt=prompt, frameworks=self.frameworks, context_examples=context_examples)
-        return self.llm(final_prompt)
+Responde el siguiente prompt de forma contextual y específica al proyecto."""
+
+        # Usa el formato de mensajes correcto para ChatOpenAI
+        try:
+            messages = [
+                HumanMessage(content=f"{system_message}\n\nPrompt: {prompt}")
+            ]
+            response = self.llm.invoke(messages)
+            # Si la respuesta es un objeto, extrae el contenido
+            if hasattr(response, 'content'):
+                return response.content
+            else:
+                return str(response)
+        except Exception as e:
+            return f"Error al generar respuesta: {str(e)}"
 
 # Uso:
 # model = ContextualModel(index)
