@@ -100,7 +100,12 @@ class ContextualModel:
             for ex in self.training_data[-3:]  # Solo últimos 3 ejemplos
         ])
         
-        base_context = f"""Eres AgentestingMIA, un agente experto en QA Automation especializado en generar código de pruebas.
+        base_context = f"""Eres AgentestingMIA, un agente experto en QA Automation especializado en generar código de pruebas automáticas.
+
+🤖 COMPORTAMIENTO CLAVE: Cuando el usuario pide automatización, SIEMPRE debes:
+1. PRIMERO sugerir las clases específicas basadas en tu entrenamiento
+2. LUEGO preguntar si debe crearlas automáticamente
+3. SER PROACTIVO y específico, no genérico
 
 PROYECTO ACTUAL:
 - Frameworks detectados: {self.frameworks}
@@ -108,20 +113,41 @@ PROYECTO ACTUAL:
 
 {specialized_training}
 
-CAPACIDADES:
-1. Generar código de pruebas basado en patrones del proyecto
-2. Crear archivos automáticamente cuando sea necesario
-3. Sugerir mejores prácticas de QA
+INSTRUCCIONES CRÍTICAS:
+- Cuando pidan automatización para "carrito de compra", "login", etc. DEBES sugerir clases ESPECÍFICAS del entrenamiento
+- NUNCA des respuestas genéricas como "usa Appium" - sé específico con código real
+- SIEMPRE ofrece crear archivos automáticamente si el usuario confirma
+- Usa EXACTAMENTE los patrones del training_data.json
 
 FORMATO PARA CREAR ARCHIVOS:
 ARCHIVO: ruta/del/archivo.ext
 CONTENIDO:
 [código aquí]
 
+EJEMPLO DE RESPUESTA CORRECTA:
+"Para automatización de carrito con login, necesitarás estas clases específicas:
+
+📱 Page Objects:
+- LoginScreen.java (login móvil)
+- ProductScreen.java (productos)
+- OrderScreen.java (carrito)
+- PurchaseSummaryScreen.java (resumen compra)
+
+📋 Tasks:
+- Login.java (autenticación)
+- AddOrder.java (agregar productos)
+- SearchCustomer.java (buscar cliente)
+
+🧪 Steps:
+- LoginStepDefinition.java
+- OrderCreateStepDefinition.java
+
+¿Quieres que cree estas clases automáticamente con el código específico?"
+
 CONTEXTO PREVIO:
 {context_examples}
 
-Responde de forma concisa y específica."""
+SIEMPRE sé específico y proactivo, no genérico."""
 
         return base_context
     
@@ -216,6 +242,10 @@ INSTRUCCIONES:
         if self._is_simple_greeting(prompt):
             return self._generate_friendly_greeting()
         
+        # DETECCIÓN AUTOMÁTICA: Si pide automatización, ser específico
+        if self._is_automation_request(prompt):
+            return self._generate_specific_automation_response(prompt)
+        
         # OPTIMIZACIÓN: Usar contexto pre-construido
         try:
             # Usar contexto base + prompt específico
@@ -305,6 +335,118 @@ Asegúrate de que tu API key comience con "sk-" y tenga suficiente crédito en t
         """Detecta si el prompt es un saludo simple"""
         greetings = ['hola', 'hello', 'hi', 'buenas', 'buenos días', 'buenas tardes', 'buenas noches', 'hey', 'saludos']
         return prompt.lower().strip() in greetings
+    
+    def _is_automation_request(self, prompt):
+        """Detecta si el usuario está pidiendo automatización específica"""
+        automation_keywords = [
+            'automatizar', 'automatización', 'crear proyecto', 'crea', 'generar',
+            'carrito', 'login', 'página', 'formulario', 'página de', 'app',
+            'móvil', 'mobile', 'proyecto de', 'suite de pruebas', 'test',
+            'pruebas para', 'automatizar pruebas'
+        ]
+        prompt_lower = prompt.lower()
+        return any(keyword in prompt_lower for keyword in automation_keywords)
+    
+    def _generate_specific_automation_response(self, prompt):
+        """Genera respuesta específica basada en el entrenamiento móvil"""
+        try:
+            # Cargar training data para respuestas específicas
+            import json
+            training_file = os.path.join(os.path.dirname(__file__), '..', 'training', 'training_data.json')
+            
+            if os.path.exists(training_file):
+                with open(training_file, 'r', encoding='utf-8') as f:
+                    training_data = json.load(f)
+                    
+                    # Extraer clases específicas del entrenamiento
+                    page_objects = training_data.get('patterns', {}).get('page_objects', [])
+                    step_definitions = training_data.get('patterns', {}).get('step_definitions', [])
+                    utilities = training_data.get('patterns', {}).get('utilities', [])
+                    
+                    # Generar respuesta específica para carrito/login
+                    response = f"""🎯 **Para automatización {self._extract_scenario(prompt)}, necesitarás estas clases específicas basadas en tu entrenamiento móvil:**
+
+📱 **Page Objects (Screens):**"""
+                    
+                    # Filtrar Page Objects relevantes
+                    relevant_pages = []
+                    prompt_lower = prompt.lower()
+                    
+                    for page in page_objects:
+                        class_name = page.get('class_name', '')
+                        if ('login' in prompt_lower and 'Login' in class_name) or \
+                           ('carrito' in prompt_lower or 'order' in prompt_lower and 'Order' in class_name) or \
+                           ('product' in prompt_lower and 'Product' in class_name) or \
+                           ('customer' in prompt_lower and 'Customer' in class_name):
+                            relevant_pages.append(page)
+                    
+                    # Si no hay específicos, tomar los principales
+                    if not relevant_pages:
+                        relevant_pages = page_objects[:4]  # Tomar los primeros 4
+                    
+                    for page in relevant_pages[:5]:  # Máximo 5
+                        class_name = page.get('class_name', 'Screen')
+                        sample_controls = page.get('mobile_controls', [])[:3]  # 3 controles ejemplo
+                        
+                        response += f"\n- **{class_name}** - Controles: "
+                        if sample_controls:
+                            controls_str = ', '.join([f"{c.get('name', '')} ({c.get('type', '')})" for c in sample_controls])
+                            response += controls_str
+                        else:
+                            response += "pantalla móvil"
+                    
+                    response += f"\n\n📋 **Tasks (Lógica de negocio):**"
+                    for utility in utilities[:4]:  # Máximo 4 tasks
+                        if utility.get('utility_type') == 'task':
+                            file_name = utility.get('file', 'Task')
+                            methods = utility.get('utility_methods', [])[:2]  # 2 métodos ejemplo
+                            response += f"\n- **{file_name}** - Métodos: {', '.join(methods) if methods else 'lógica de negocio'}"
+                    
+                    response += f"\n\n🧪 **Step Definitions (Cucumber):**"
+                    for step in step_definitions[:3]:  # Máximo 3 step definitions
+                        file_name = step.get('file', 'StepDefinition')
+                        sample_steps = step.get('steps', [])[:2]  # 2 steps ejemplo
+                        response += f"\n- **{file_name}**"
+                        if sample_steps:
+                            response += f" - Steps: {', '.join(sample_steps)}"
+                    
+                    response += f"""\n\n🔧 **Arquitectura del proyecto:**
+- **Frameworks:** Appium + Cucumber + JUnit
+- **Patrón:** Task-Screen-Control (móvil)
+- **Locators:** Android com.uniflex.flexbusinessandroid:id/...
+- **Assertions:** assertTrue, assertEquals
+
+💡 **¿Quieres que cree estas clases automáticamente con código específico?**
+
+Solo responde "sí" o especifica qué clases necesitas primero, y generaré el código completo usando los patrones exactos de tu entrenamiento móvil."""
+                    
+                    return response
+            
+        except Exception as e:
+            pass
+        
+        # Fallback: respuesta genérica si falla
+        return """Para automatización móvil, te recomiendo crear:
+
+📱 **Page Objects:** LoginScreen, ProductScreen, OrderScreen  
+📋 **Tasks:** Login, AddOrder, SearchCustomer  
+🧪 **Steps:** LoginStepDefinition, OrderCreateStepDefinition  
+
+¿Quieres que genere el código específico?"""
+    
+    def _extract_scenario(self, prompt):
+        """Extrae el escenario específico del prompt"""
+        prompt_lower = prompt.lower()
+        if 'carrito' in prompt_lower or 'compra' in prompt_lower:
+            return "de carrito de compras"
+        elif 'login' in prompt_lower:
+            return "de login"
+        elif 'formulario' in prompt_lower:
+            return "de formulario"
+        elif 'móvil' in prompt_lower or 'mobile' in prompt_lower:
+            return "móvil"
+        else:
+            return "de aplicación"
     
     def _generate_friendly_greeting(self):
         """Genera un saludo amigable específico para QA"""

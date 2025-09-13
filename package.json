@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
-  "displayName": "AgentestingMIA v18.0.0 - Móvil & Web",
-  "description": "Agente IA especializado en automatización QA móvil (Appium) y web (Selenium). Entrenado con FlexBusinessMobile. Requiere API key OpenAI.",
-  "version": "18.0.0",
+  "displayName": "🤖 AgentestingMIA v19.0.0 - Estado Persistente + Velocidad",
+  "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con PERSISTENCIA mejorada y optimización de velocidad",
+  "version": "19.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"

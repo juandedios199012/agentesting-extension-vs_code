@@ -5,6 +5,9 @@ import * as path from 'path';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
+// Variable global para mantener el panel persistente
+let currentPanel: vscode.WebviewPanel | undefined = undefined;
+
 export function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
@@ -38,20 +41,41 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(disposableRunAgent);
 
-    // Comando para mostrar panel de resultados y logs
+    // Comando para mostrar panel de resultados y logs (MEJORADO CON PERSISTENCIA)
     const disposableShowPanel = vscode.commands.registerCommand('Agentesting.showResultsPanel', () => {
-        const panel = vscode.window.createWebviewPanel(
+        // Si ya existe un panel, enfócalo en lugar de crear uno nuevo
+        if (currentPanel) {
+            currentPanel.reveal(vscode.ViewColumn.One);
+            return;
+        }
+
+        // Crear panel con persistencia mejorada
+        currentPanel = vscode.window.createWebviewPanel(
             'agenteQaResults',
             'AgentestingMIA - Agente IA',
             vscode.ViewColumn.One,
             {
-                enableScripts: true
+                enableScripts: true,
+                retainContextWhenHidden: true, // CLAVE: Mantiene el estado cuando está oculto
+                localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'agent-backend'))]
             }
         );
-        panel.webview.html = getWebviewContent();
 
-        panel.webview.onDidReceiveMessage(async message => {
+        currentPanel.webview.html = getWebviewContent();
+
+        // Limpiar referencia cuando se cierra el panel
+        currentPanel.onDidDispose(() => {
+            currentPanel = undefined;
+        }, null, context.subscriptions);
+
+        currentPanel.webview.onDidReceiveMessage(async message => {
             if (message.type === 'enviarPrompt') {
+                // Mostrar indicador de carga
+                currentPanel?.webview.postMessage({ 
+                    type: 'mostrarCarga', 
+                    mensaje: 'Procesando con IA...' 
+                });
+
                 const respuesta = await ejecutarAgentePython(message.prompt, message.archivoAdjunto);
                 
                 // Detectar si el agente quiere crear un archivo automáticamente
@@ -69,12 +93,12 @@ export function activate(context: vscode.ExtensionContext) {
                         
                         // Agregar información a la respuesta
                         const respuestaConArchivo = `${respuesta}\n\n📁 **Archivo creado automáticamente:** ${nombreArchivo}`;
-                        panel.webview.postMessage({ type: 'respuestaAgente', respuesta: respuestaConArchivo });
+                        currentPanel?.webview.postMessage({ type: 'respuestaAgente', respuesta: respuestaConArchivo });
                     } catch (error) {
-                        panel.webview.postMessage({ type: 'respuestaAgente', respuesta: `${respuesta}\n\n❌ Error al crear archivo: ${error}` });
+                        currentPanel?.webview.postMessage({ type: 'respuestaAgente', respuesta: `${respuesta}\n\n❌ Error al crear archivo: ${error}` });
                     }
                 } else {
-                    panel.webview.postMessage({ type: 'respuestaAgente', respuesta });
+                    currentPanel?.webview.postMessage({ type: 'respuestaAgente', respuesta });
                 }
             }
         });
@@ -299,13 +323,33 @@ function getWebviewContent(): string {
         </div>
         <script>
             const vscode = acquireVsCodeApi();
-            let history = [];
-            let archivoAdjunto = null;
+            
+            // PERSISTENCIA: Recuperar estado anterior si existe
+            const previousState = vscode.getState() || {};
+            let history = previousState.history || [];
+            let archivoAdjunto = previousState.archivoAdjunto || null;
+            let isLoading = false;
+            
+            // Restaurar historial al cargar
+            if (history.length > 0) {
+                renderHistory();
+            }
+            
+            // Restaurar archivo adjunto si existe
+            if (archivoAdjunto) {
+                updateDropZone();
+            }
             
             document.getElementById('promptForm').addEventListener('submit', function(e) {
                 e.preventDefault();
+                if (isLoading) return; // Prevenir envíos múltiples
+                
                 const prompt = document.getElementById('prompt').value;
+                if (!prompt.trim()) return;
+                
                 addToHistory(prompt);
+                setLoadingState(true);
+                
                 vscode.postMessage({ 
                     type: 'enviarPrompt', 
                     prompt,
@@ -313,9 +357,37 @@ function getWebviewContent(): string {
                 });
             });
             
+            function setLoadingState(loading) {
+                isLoading = loading;
+                const button = document.querySelector('button[type="submit"]');
+                const respuesta = document.getElementById('respuesta');
+                
+                if (loading) {
+                    button.textContent = 'Procesando...';
+                    button.disabled = true;
+                    respuesta.textContent = '🤖 AgentestingMIA está procesando tu solicitud...';
+                    respuesta.style.color = '#00e6fe';
+                    respuesta.style.fontStyle = 'italic';
+                } else {
+                    button.textContent = 'Enviar al agente';
+                    button.disabled = false;
+                    respuesta.style.color = '#e0e0e0';
+                    respuesta.style.fontStyle = 'normal';
+                }
+            }
+            
             function addToHistory(prompt) {
                 history.unshift(prompt);
+                if (history.length > 20) history = history.slice(0, 20); // Limitar historial
+                saveState();
                 renderHistory();
+            }
+            
+            function saveState() {
+                vscode.setState({
+                    history: history,
+                    archivoAdjunto: archivoAdjunto
+                });
             }
             
             function renderHistory() {
@@ -339,6 +411,7 @@ function getWebviewContent(): string {
             
             function removeFile() {
                 archivoAdjunto = null;
+                saveState();
                 updateDropZone();
             }
             
@@ -390,6 +463,7 @@ function getWebviewContent(): string {
                             contenido: evt.target.result,
                             tipo: file.type
                         };
+                        saveState();
                         updateDropZone();
                         
                         // Auto-generar prompt si está vacío
@@ -406,6 +480,7 @@ function getWebviewContent(): string {
             window.addEventListener('message', event => {
                 const message = event.data;
                 if (message.type === 'respuestaAgente') {
+                    setLoadingState(false);
                     document.getElementById('respuesta').textContent = message.respuesta;
                     
                     // Mostrar notificación si se creó un archivo automáticamente
@@ -420,8 +495,11 @@ function getWebviewContent(): string {
                     // Limpiar archivo adjunto después de procesar
                     if (archivoAdjunto) {
                         archivoAdjunto = null;
+                        saveState();
                         updateDropZone();
                     }
+                } else if (message.type === 'mostrarCarga') {
+                    setLoadingState(true);
                 }
             });
         </script>
@@ -446,15 +524,15 @@ function getFileExtension(filename: string): string {
     }
 }
 
-// Ejecuta el agente Python embebido en la extensión y retorna la respuesta
+// Ejecuta el agente Python embebido en la extensión y retorna la respuesta (OPTIMIZADO)
 async function ejecutarAgentePython(prompt: string, archivoAdjunto?: any): Promise<string> {
     const { exec } = require('child_process');
     const fs = require('fs');
     const path = require('path');
     
-    // Usa la ruta interna del backend embebido en la extensión
+    // Usa la ruta interna del backend embebido en la extensión (OPTIMIZADA)
     const extensionPath = vscode.extensions.getExtension('AgentestingMIA.agentestingmia')?.extensionPath || __dirname;
-    const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'cli.py');
+    const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'agente.py'); // Cambiado a agente.py directo
     const workspaceRoot = vscode.workspace.rootPath || process.cwd();
     
     // Busca la API key en orden de prioridad:
@@ -513,7 +591,7 @@ async function ejecutarAgentePython(prompt: string, archivoAdjunto?: any): Promi
     }
     
     return new Promise((resolve) => {
-        // Prepara el prompt completo incluyendo archivo adjunto si existe
+        // Prepara el prompt completo incluyendo archivo adjunto si existe (OPTIMIZADO)
         let promptCompleto = prompt;
         
         if (archivoAdjunto) {
@@ -538,14 +616,28 @@ INSTRUCCIONES:
             OPENAI_API_KEY: userApiKey || ''
         };
         
-        exec(`python "${agentPath}" "${promptCompleto}"`, { 
+        // OPTIMIZACIÓN: Usar timeout y límite de memoria
+        const options = {
             cwd: workspaceRoot,
-            env: env
-        }, (error: any, stdout: string, stderr: string) => {
+            env: env,
+            timeout: 30000, // 30 segundos máximo
+            maxBuffer: 1024 * 1024 // 1MB máximo de salida
+        };
+        
+        exec(`python "${agentPath}" "${promptCompleto.replace(/"/g, '\\"')}"`, options, (error: any, stdout: string, stderr: string) => {
             if (error) {
-                resolve(`Error: ${stderr || error.message}`);
+                if (error.code === 'TIMEOUT') {
+                    resolve('❌ **Timeout**: El agente tardó más de 30 segundos. Intenta con un prompt más específico.');
+                } else {
+                    resolve(`❌ **Error del agente**: ${stderr || error.message}\n\n💡 **Sugerencias:**\n- Verifica que Python esté instalado\n- Revisa la configuración de la API key\n- Intenta con un prompt más simple`);
+                }
             } else {
-                resolve(stdout.trim());
+                const respuesta = stdout.trim();
+                if (respuesta.includes('[SUCCESS]')) {
+                    resolve(respuesta.replace('[SUCCESS]', '✅ **[SUCCESS]**'));
+                } else {
+                    resolve(respuesta || '⚠️ El agente no devolvió respuesta. Intenta nuevamente.');
+                }
             }
         });
     });
