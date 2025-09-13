@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
-  "displayName": "🤖 AgentestingMIA v19.0.0 - Estado Persistente + Velocidad",
+  "displayName": "🤖 AgentestingMIA v20.0.0 - Estado Persistente + Velocidad",
   "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con PERSISTENCIA mejorada y optimización de velocidad",
-  "version": "19.0.0",
+  "version": "20.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
@@ -40,11 +40,11 @@
     "commands": [
       {
         "command": "Agentesting.showResultsPanel",
-        "title": "🤖 AgentestingMIA v19.0.0 - Estado Persistente + Velocidad"
+        "title": "🤖 AgentestingMIA v20.0.0 - Estado Persistente + Velocidad"
       },
       {
         "command": "Agentesting.showSetupGuide",
-        "title": "⚙️ AgentestingMIA v19.0.0: Setup API Key"
+        "title": "⚙️ AgentestingMIA v20.0.0: Setup API Key"
       }
     ],
     "configuration": {
