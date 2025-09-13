@@ -40,11 +40,11 @@
     "commands": [
       {
         "command": "Agentesting.showResultsPanel",
-        "title": "🤖 AgentestingMIA v18.0.0 - Especialista Móvil + Web"
+        "title": "🤖 AgentestingMIA v19.0.0 - Estado Persistente + Velocidad"
       },
       {
         "command": "Agentesting.showSetupGuide",
-        "title": "⚙️ AgentestingMIA v18.0.0: Setup API Key"
+        "title": "⚙️ AgentestingMIA v19.0.0: Setup API Key"
       }
     ],
     "configuration": {
