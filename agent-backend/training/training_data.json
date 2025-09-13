@@ -1,157 +1,1007 @@
 {
-  "page_objects": [],
-  "test_methods": [],
-  "step_definitions": [
-    {
-      "file": "LoginStepDefinition.java",
-      "steps": [
-        "el usuario navega a la página de login",
-        "el usuario ingresa email {string} y contraseña {string}",
-        "el usuario hace clic en recordar sesión",
-        "el usuario debe ser redirigido al dashboard",
-        "se muestra un mensaje de error {string}"
-      ],
-      "detailed_steps": [
-        {
-          "type": "Given",
-          "text": "el usuario navega a la página de login",
-          "method": "elUsuarioNavegaALaPaginaDeLogin"
-        },
-        {
-          "type": "When",
-          "text": "el usuario ingresa email {string} y contraseña {string}",
-          "method": "elUsuarioIngresaEmailYContrasena"
-        },
-        {
-          "type": "And",
-          "text": "el usuario hace clic en recordar sesión",
-          "method": "elUsuarioHaceClicEnRecordarSesion"
-        },
-        {
-          "type": "Then",
-          "text": "el usuario debe ser redirigido al dashboard",
-          "method": "elUsuarioDebeSerRedirigidoAlDashboard"
-        },
-        {
-          "type": "Then",
-          "text": "se muestra un mensaje de error {string}",
-          "method": "seMuestraUnMensajeDeError"
-        }
-      ],
-      "frameworks": [
-        "Cucumber"
-      ],
-      "task_instances": [],
-      "sample_code": "@Given(\"el usuario navega a la página de login\")\npublic void elUsuarioNavegaALaPaginaDeLogin() {\n    // Implementación aquí\n}\n\n@When(\"el usuario ingresa email {string} y contraseña {string}\")\npublic void elUsuarioIngresaEmailYContrasena() {\n    // Implementación aquí\n}\n"
-    }
-  ],
-  "utilities": [],
-  "test_data": [],
-  "web_pages": [
-    {
-      "file": "LoginPage.java",
-      "class_name": "LoginPage",
-      "locators": [],
-      "web_controls": [],
-      "action_methods": [
-        "clickLogin"
-      ],
-      "automation_type": "web",
-      "sample_code": "package pages;\n\nimport org.openqa.selenium.By;\nimport org.openqa.selenium.WebDriver;\nimport org.openqa.selenium.WebElement;\nimport org.openqa.selenium.support.FindBy;\n\npublic class LoginPage {\n    \n    private WebDriver driver;\n    \n    // Web Elements usando Selenium\n    @FindBy(id = \"email\")\n    p"
-    }
-  ],
-  "web_tasks": [
-    {
-      "file": "LoginTask.java",
-      "utility_type": "web_task",
-      "business_methods": [
-        "withCredentials",
-        "withValidUser",
-        "withInvalidUser",
-        "withRememberMe"
-      ],
-      "page_usage": [],
-      "automation_type": "web",
-      "sample_code": "package tasks;\n\nimport pages.LoginPage;\nimport org.openqa.selenium.WebDriver;\n\npublic class LoginTask {\n    \n    private LoginPage loginPage;\n    \n    public LoginTask(WebDriver driver) {\n        this.loginPage = new LoginPage(driver);\n    }\n    \n    public void withCredentials(String email, String password) {\n        loginPage.enterEmail(email);\n        loginPage.enterPassword(password);\n        "
-    }
-  ],
-  "web_controls": [
-    {
-      "control_type": "WebTextBox",
-      "methods": [
-        "sendKeys",
-        "getText",
-        "clear",
-        "isDisplayed",
-        "isEnabled"
-      ],
-      "usage": "public WebTextBox emailField = new WebTextBox(By.id(\"email\"));",
-      "sample_implementation": "public class WebTextBox extends WebElement {\n    public void sendKeys(String text) {\n        element.clear();\n        element.sendKeys(text);\n    }\n    \n    public String getText() {\n        return element.getAttribute(\"value\");\n    }\n}"
-    },
-    {
-      "control_type": "WebButton",
-      "methods": [
-        "click",
-        "isEnabled",
-        "getText",
-        "isDisplayed"
-      ],
-      "usage": "public WebButton submitButton = new WebButton(By.xpath(\"//button[@type='submit']\"));",
-      "sample_implementation": "public class WebButton extends WebElement {\n    public void click() {\n        WebDriverWait wait = new WebDriverWait(driver, 10);\n        wait.until(ExpectedConditions.elementToBeClickable(element));\n        element.click();\n    }\n}"
-    },
-    {
-      "control_type": "WebDropdown",
-      "methods": [
-        "selectByText",
-        "selectByValue",
-        "selectByIndex",
-        "getSelectedOption"
-      ],
-      "usage": "public WebDropdown countryDropdown = new WebDropdown(By.name(\"country\"));",
-      "sample_implementation": "public class WebDropdown extends WebElement {\n    public void selectByText(String text) {\n        Select select = new Select(element);\n        select.selectByVisibleText(text);\n    }\n}"
-    },
-    {
-      "control_type": "WebCheckBox",
-      "methods": [
-        "check",
-        "uncheck",
-        "isChecked",
-        "toggle"
-      ],
-      "usage": "public WebCheckBox termsCheckbox = new WebCheckBox(By.id(\"terms\"));",
-      "sample_implementation": "public class WebCheckBox extends WebElement {\n    public void check() {\n        if (!isChecked()) {\n            element.click();\n        }\n    }\n    \n    public boolean isChecked() {\n        return element.isSelected();\n    }\n}"
-    },
-    {
-      "control_type": "WebLabel",
-      "methods": [
-        "getText",
-        "isDisplayed",
-        "getAttribute"
-      ],
-      "usage": "public WebLabel messageLabel = new WebLabel(By.css(\".message\"));",
-      "sample_implementation": "public class WebLabel extends WebElement {\n    public String getText() {\n        return element.getText();\n    }\n}"
-    }
-  ],
-  "project_type": "web",
-  "frameworks": [
-    "Selenium",
-    "Cucumber",
-    "JUnit"
-  ],
-  "consistency_rules": {
-    "naming_conventions": {
-      "pages": "NombrePage.java (ej: LoginPage.java, ProductPage.java)",
-      "tasks": "NombreTask.java (ej: LoginTask.java, SearchTask.java)",
-      "controls": "WebNombreControl.java (ej: WebTextBox.java, WebButton.java)",
-      "step_definitions": "NombreStepDefinition.java (mismo patrón que móvil)"
-    },
-    "architectural_consistency": {
-      "mobile_pattern": "Task → Screen → AppiumControl",
-      "web_pattern": "Task → Page → WebControl",
-      "business_methods": "Mantener mismos nombres: withCredentials(), withTheData(), etc.",
-      "step_style": "Mantener español y misma estructura de Cucumber"
-    }
+  "patterns": {
+    "page_objects": [
+      {
+        "file": "CobranzaScreen.java",
+        "class_name": "CobranzaScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/tviTipoMedioPago",
+          "com.uniflex.flexbusinessandroid:id/tviMoneda",
+          "com.uniflex.flexbusinessandroid:id/tviTipoCambio",
+          "com.uniflex.flexbusinessandroid:id/slvDocumentosCobrar",
+          "com.uniflex.flexbusinessandroid:id/tviObservacionCobranza",
+          "com.uniflex.flexbusinessandroid:id/tviPieTotal",
+          "com.uniflex.flexbusinessandroid:id/spnBanco",
+          "com.uniflex.flexbusinessandroid:id/txtNumeroComprobante",
+          "com.uniflex.flexbusinessandroid:id/txtFechaInicio",
+          "com.uniflex.flexbusinessandroid:id/txtFechaVencimiento"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Label",
+            "name": "tipoCambioLabel"
+          },
+          {
+            "type": "TextBox",
+            "name": "observacionTextBox"
+          },
+          {
+            "type": "Label",
+            "name": "pieTotalLabel"
+          },
+          {
+            "type": "TextBox",
+            "name": "numeroComprobanteTextBox"
+          },
+          {
+            "type": "TextBox",
+            "name": "fechaInicioTextBox"
+          },
+          {
+            "type": "TextBox",
+            "name": "fechaVencimientoTextBox"
+          },
+          {
+            "type": "TextBox",
+            "name": "montoAmortizacionTextBox"
+          },
+          {
+            "type": "CheckBox",
+            "name": "pagarTodoCheckBox"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Label tipoCambioLabel = new Label(By.id(\"com.uniflex.flexbusinessandroid:id/tviTipoMedioPago\"));\npublic TextBox observacionTextBox = new TextBox(By.id(\"com.uniflex.flexbusinessandroid:id/tviTipoMedioPago\"));\npublic Label pieTotalLabel = new Label(By.id(\"com.uniflex.flexbusinessandroid:id/tviTipoMedioPago\"));"
+      },
+      {
+        "file": "CustomerInformationScreen.java",
+        "class_name": "CustomerInformationScreen",
+        "locators": [
+          "(//android.widget.TextView)[1]"
+        ],
+        "mobile_controls": [],
+        "action_methods": [],
+        "sample_code": "package activity.Customer;\n\nimport appiumControl.Scroll;\nimport org.openqa.selenium.By;\n\npublic class CustomerInformationScreen {\n\n    public Scroll menuInformacion = new Scroll(By.xpath(\"(//android.widget.TextView)[1]\"));\n}\n"
+      },
+      {
+        "file": "CustomerListScreen.java",
+        "class_name": "CustomerListScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/ibuClientes",
+          "(//android.widget.CheckBox)[1]",
+          "(//android.widget.CheckBox)[2]",
+          "com.uniflex.flexbusinessandroid:id/ibuClientes"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Button",
+            "name": "clienteButton"
+          },
+          {
+            "type": "CheckBox",
+            "name": "clienteCheckBox0"
+          },
+          {
+            "type": "CheckBox",
+            "name": "clienteCheckBox1"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Button clienteButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/ibuClientes\"));\npublic CheckBox clienteCheckBox0 = new CheckBox(By.id(\"com.uniflex.flexbusinessandroid:id/ibuClientes\"));\npublic CheckBox clienteCheckBox1 = new CheckBox(By.id(\"com.uniflex.flexbusinessandroid:id/ibuClientes\"));"
+      },
+      {
+        "file": "LoginScreen.java",
+        "class_name": "LoginScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/eteEmpresa",
+          "com.uniflex.flexbusinessandroid:id/loginEteUsuario",
+          "com.uniflex.flexbusinessandroid:id/LoginEtePassword",
+          "com.uniflex.flexbusinessandroid:id/loginButIngresar",
+          "com.uniflex.flexbusinessandroid:id/eteEmpresa",
+          "com.uniflex.flexbusinessandroid:id/loginEteUsuario",
+          "com.uniflex.flexbusinessandroid:id/LoginEtePassword",
+          "com.uniflex.flexbusinessandroid:id/loginButIngresar"
+        ],
+        "mobile_controls": [
+          {
+            "type": "TextBox",
+            "name": "empresaTextBox"
+          },
+          {
+            "type": "TextBox",
+            "name": "usuarioTextBox"
+          },
+          {
+            "type": "TextBox",
+            "name": "passwordTextBox"
+          },
+          {
+            "type": "Button",
+            "name": "ingresarButton"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public TextBox empresaTextBox = new TextBox(By.id(\"com.uniflex.flexbusinessandroid:id/eteEmpresa\"));\npublic TextBox usuarioTextBox = new TextBox(By.id(\"com.uniflex.flexbusinessandroid:id/eteEmpresa\"));\npublic TextBox passwordTextBox = new TextBox(By.id(\"com.uniflex.flexbusinessandroid:id/eteEmpresa\"));"
+      },
+      {
+        "file": "MenuMobileScreen.java",
+        "class_name": "MenuMobileScreen",
+        "locators": [],
+        "mobile_controls": [
+          {
+            "type": "Button",
+            "name": "menuButton"
+          },
+          {
+            "type": "Button",
+            "name": "pedidoMenu"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Button menuButton = new Button(By.id(\"locator\"));\npublic Button pedidoMenu = new Button(By.id(\"locator\"));"
+      },
+      {
+        "file": "ListadoNoPedidoScreen.java",
+        "class_name": "ListadoNoPedidoScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/tviNoPedidoMensaje",
+          "com.uniflex.flexbusinessandroid:id/btnEliminar",
+          "com.uniflex.flexbusinessandroid:id/btnModificar",
+          "com.uniflex.flexbusinessandroid:id/button1",
+          "com.uniflex.flexbusinessandroid:id/tviNoPedidoMensaje",
+          "com.uniflex.flexbusinessandroid:id/btnEliminar",
+          "com.uniflex.flexbusinessandroid:id/btnModificar",
+          "com.uniflex.flexbusinessandroid:id/button1"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Label",
+            "name": "noPedidoMensajeLabel"
+          },
+          {
+            "type": "Button",
+            "name": "eliminarButton"
+          },
+          {
+            "type": "Button",
+            "name": "modificarButton"
+          },
+          {
+            "type": "Button",
+            "name": "confirmacionAnulacionButton"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Label noPedidoMensajeLabel = new Label(By.id(\"com.uniflex.flexbusinessandroid:id/tviNoPedidoMensaje\"));\npublic Button eliminarButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/tviNoPedidoMensaje\"));\npublic Button modificarButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/tviNoPedidoMensaje\"));"
+      },
+      {
+        "file": "NoPedidoScreen.java",
+        "class_name": "NoPedidoScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/tviMotivo",
+          "com.uniflex.flexbusinessandroid:id/tviMotivo"
+        ],
+        "mobile_controls": [],
+        "action_methods": [],
+        "sample_code": "package activity.nopedido;\n\nimport appiumControl.Selector;\nimport org.openqa.selenium.By;\n\npublic class NoPedidoScreen {\n    public Selector motivoSelector = new Selector(By.id(\"com.uniflex.flexbusinessandroid:id/tviMotivo\"));\n}\n"
+      },
+      {
+        "file": "OrderScreen.java",
+        "class_name": "OrderScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/actAgregarItemPedido",
+          "com.uniflex.flexbusinessandroid:id/btnEliminar",
+          "com.uniflex.flexbusinessandroid:id/actAgregarItemPedido",
+          "com.uniflex.flexbusinessandroid:id/btnEliminar"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Button",
+            "name": "agregarProductosButton"
+          },
+          {
+            "type": "Button",
+            "name": "eliminarButton"
+          },
+          {
+            "type": "Label",
+            "name": "codigoProducto"
+          },
+          {
+            "type": "Label",
+            "name": "codigoProductoSalesForce"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Button agregarProductosButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/actAgregarItemPedido\"));\npublic Button eliminarButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/actAgregarItemPedido\"));\npublic Label codigoProducto = new Label(By.id(\"com.uniflex.flexbusinessandroid:id/actAgregarItemPedido\"));"
+      },
+      {
+        "file": "OrdersListScreen.java",
+        "class_name": "OrdersListScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/btnModificar",
+          "com.uniflex.flexbusinessandroid:id/btnEliminar",
+          "android:id/button1",
+          "com.uniflex.flexbusinessandroid:id/tviPedidoOperacion",
+          "com.uniflex.flexbusinessandroid:id/tviPedidoMensaje",
+          "com.uniflex.flexbusinessandroid:id/btnModificar",
+          "com.uniflex.flexbusinessandroid:id/btnEliminar",
+          "android:id/button1",
+          "com.uniflex.flexbusinessandroid:id/tviPedidoOperacion",
+          "com.uniflex.flexbusinessandroid:id/tviPedidoMensaje"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Button",
+            "name": "modificarButton"
+          },
+          {
+            "type": "Button",
+            "name": "anularButton"
+          },
+          {
+            "type": "Button",
+            "name": "confirmacionAnulacionButton"
+          },
+          {
+            "type": "Label",
+            "name": "operacionLabel"
+          },
+          {
+            "type": "Label",
+            "name": "pedidoMensajeLabel"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Button modificarButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/btnModificar\"));\npublic Button anularButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/btnModificar\"));\npublic Button confirmacionAnulacionButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/btnModificar\"));"
+      },
+      {
+        "file": "PurchaseSummaryScreen.java",
+        "class_name": "PurchaseSummaryScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/actGrabar",
+          "com.uniflex.flexbusinessandroid:id/actGrabar"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Button",
+            "name": "grabarButton"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Button grabarButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/actGrabar\"));"
+      },
+      {
+        "file": "ProductScreen.java",
+        "class_name": "ProductScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/tviCodigo",
+          "com.uniflex.flexbusinessandroid:id/tviStock1",
+          "com.uniflex.flexbusinessandroid:id/chkBonificacionManual1",
+          "com.uniflex.flexbusinessandroid:id/eteCantidad1",
+          "com.uniflex.flexbusinessandroid:id/eteCantidad2",
+          "com.uniflex.flexbusinessandroid:id/btnAceptar",
+          "com.uniflex.flexbusinessandroid:id/tviCodigo",
+          "com.uniflex.flexbusinessandroid:id/tviStock1",
+          "com.uniflex.flexbusinessandroid:id/chkBonificacionManual1",
+          "com.uniflex.flexbusinessandroid:id/eteCantidad1"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Label",
+            "name": "codigoLabel"
+          },
+          {
+            "type": "Label",
+            "name": "stock1Label"
+          },
+          {
+            "type": "CheckBox",
+            "name": "bonificacionManualCheckBox"
+          },
+          {
+            "type": "TextBox",
+            "name": "cantidad1TextBox"
+          },
+          {
+            "type": "TextBox",
+            "name": "cantidad2TextBox"
+          },
+          {
+            "type": "Button",
+            "name": "aceptarButton"
+          },
+          {
+            "type": "Label",
+            "name": "combo"
+          },
+          {
+            "type": "Label",
+            "name": "codigoLabel2"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Label codigoLabel = new Label(By.id(\"com.uniflex.flexbusinessandroid:id/tviCodigo\"));\npublic Label stock1Label = new Label(By.id(\"com.uniflex.flexbusinessandroid:id/tviCodigo\"));\npublic CheckBox bonificacionManualCheckBox = new CheckBox(By.id(\"com.uniflex.flexbusinessandroid:id/tviCodigo\"));"
+      },
+      {
+        "file": "SynchronizationScreen.java",
+        "class_name": "SynchronizationScreen",
+        "locators": [
+          "com.uniflex.flexbusinessandroid:id/ibuSincronizacion",
+          "(//android.widget.TextView)[5]",
+          "android:id/button1",
+          "com.uniflex.flexbusinessandroid:id/ibuSincronizacion",
+          "android:id/button1"
+        ],
+        "mobile_controls": [
+          {
+            "type": "Button",
+            "name": "sincronizacionButton"
+          },
+          {
+            "type": "Button",
+            "name": "menuButton"
+          },
+          {
+            "type": "Button",
+            "name": "todoButton"
+          },
+          {
+            "type": "Button",
+            "name": "finalizarButton"
+          }
+        ],
+        "action_methods": [],
+        "sample_code": "public Button sincronizacionButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/ibuSincronizacion\"));\npublic Button menuButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/ibuSincronizacion\"));\npublic Button todoButton = new Button(By.id(\"com.uniflex.flexbusinessandroid:id/ibuSincronizacion\"));"
+      }
+    ],
+    "test_methods": [
+      {
+        "file": "OrderCreateStepDefinition.java",
+        "test_methods": [],
+        "assertions": [
+          "assertTrue",
+          "assertEquals"
+        ],
+        "setup_teardown": [],
+        "sample_code": "package runner;\n\nimport activity.Order.OrdersListScreen;\nimport io.cucumber.java.en.And;\nimport io.cucumber.java.en.Given;\nimport io.cucumber.java.en.Then;\nimport io.cucumber.java.en.When;\nimport static org.junit.jupiter.api.Assertions.*;\nimport task.*;\n\n\npublic class OrderCreateStepDefinition {\n\n    Synchronization synchronization = new Synchronization();\n    SearchCustomer searchCustomer = new SearchCustomer();\n    AddOrder addOrder = new AddOrder();\n    GotoOrder gotoOrder = new GotoOrder();\n"
+      }
+    ],
+    "step_definitions": [
+      {
+        "file": "HistoriaUsuario2_gen1_steps.java",
+        "steps": [
+          "el sistema está en estado inicial",
+          "el usuario realiza la acción principal",
+          "se valida el resultado esperado"
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('el sistema está en estado inicial')\n@When('el usuario realiza la acción principal')\n@Then('se valida el resultado esperado')\ndef HistoriaUsuario2.txt(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "HistoriaUsuario2_steps.py",
+        "steps": [
+          "...",
+          "...",
+          "..."
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('...')\n@When('...')\n@Then('...')\ndef HistoriaUsuario2(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "HistoriaUsuario3_gen1_steps.java",
+        "steps": [
+          "el sistema está en estado inicial",
+          "el usuario realiza la acción principal",
+          "se valida el resultado esperado"
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('el sistema está en estado inicial')\n@When('el usuario realiza la acción principal')\n@Then('se valida el resultado esperado')\ndef HistoriaUsuario3.txt(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "HistoriaUsuario3_steps.py",
+        "steps": [
+          "...",
+          "...",
+          "..."
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('...')\n@When('...')\n@Then('...')\ndef HistoriaUsuario3(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "HistoriaUsuario_gen1_steps.java",
+        "steps": [
+          "el sistema está en estado inicial",
+          "el usuario realiza la acción principal",
+          "se valida el resultado esperado"
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('el sistema está en estado inicial')\n@When('el usuario realiza la acción principal')\n@Then('se valida el resultado esperado')\ndef HistoriaUsuario.txt(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "HistoriaUsuario_steps.py",
+        "steps": [
+          "...",
+          "...",
+          "..."
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('...')\n@When('...')\n@Then('...')\ndef HistoriaUsuario(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "login_gen1_steps.java",
+        "steps": [
+          "el sistema está en estado inicial",
+          "el usuario realiza la acción principal",
+          "se valida el resultado esperado"
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('el sistema está en estado inicial')\n@When('el usuario realiza la acción principal')\n@Then('se valida el resultado esperado')\ndef login.feature(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "Order_gen1_steps.java",
+        "steps": [
+          "el sistema está en estado inicial",
+          "el usuario realiza la acción principal",
+          "se valida el resultado esperado"
+        ],
+        "detailed_steps": [],
+        "frameworks": [],
+        "task_instances": [],
+        "sample_code": "@Given('el sistema está en estado inicial')\n@When('el usuario realiza la acción principal')\n@Then('se valida el resultado esperado')\ndef Order.feature(context):\n    # Implementación del step\n    pass\n\n"
+      },
+      {
+        "file": "CobranzaDepositoStepDefinition.java",
+        "steps": [
+          "El vendedor inicia sesion",
+          "El vendedor sincroniza la data",
+          "El vendedor selecciona al cliente {string} {string}",
+          "registra una cobranza parcial deposito con banco {string}, comprobante {string}, inicio {string}, vencimiento {string}, comprobante venta {string} y monto {string}",
+          "registra una cobranza total deposito con banco {string}, comprobante {string}, inicio {string}, vencimiento {string}, comprobante venta {string}",
+          "El sistema muestra el mensaje de cobranza deposito {string}"
+        ],
+        "detailed_steps": [
+          {
+            "type": "Given",
+            "text": "El vendedor inicia sesion",
+            "method": "elVendedorIniciaSesion"
+          },
+          {
+            "type": "And",
+            "text": "El vendedor sincroniza la data",
+            "method": "elVendedorSincronizaLaData"
+          },
+          {
+            "type": "When",
+            "text": "El vendedor selecciona al cliente {string} {string}",
+            "method": "elVendedorSeleccionaAlCliente"
+          },
+          {
+            "type": "When",
+            "text": "registra una cobranza parcial deposito con banco {string}, comprobante {string}, inicio {string}, vencimiento {string}, comprobante venta {string} y monto {string}",
+            "method": "registraCobranzaParcialDeposito"
+          },
+          {
+            "type": "When",
+            "text": "registra una cobranza total deposito con banco {string}, comprobante {string}, inicio {string}, vencimiento {string}, comprobante venta {string}",
+            "method": "registraCobranzaTotalDeposito"
+          },
+          {
+            "type": "Then",
+            "text": "El sistema muestra el mensaje de cobranza deposito {string}",
+            "method": "sistemaMuestraMensajeCobranzaDeposito"
+          }
+        ],
+        "frameworks": [],
+        "task_instances": [
+          {
+            "type": "Login",
+            "name": "login",
+            "class": "Login"
+          },
+          {
+            "type": "Synchronization",
+            "name": "synchronization",
+            "class": "Synchronization"
+          },
+          {
+            "type": "SearchCustomer",
+            "name": "searchCustomer",
+            "class": "SearchCustomer"
+          },
+          {
+            "type": "CobranzaScreen",
+            "name": "cobranzaScreen",
+            "class": "CobranzaScreen"
+          },
+          {
+            "type": "RegistrarCobranzaParcialDeposito",
+            "name": "registrarCobranzaParcialDeposito",
+            "class": "RegistrarCobranzaParcialDeposito"
+          }
+        ],
+        "sample_code": "@Given(\"El vendedor inicia sesion\")\npublic void elVendedorIniciaSesion() {\n    // Implementación aquí\n}\n\n@And(\"El vendedor sincroniza la data\")\npublic void elVendedorSincronizaLaData() {\n    // Implementación aquí\n}\n"
+      },
+      {
+        "file": "CobranzaStepDefinition.java",
+        "steps": [
+          "El vendedor inicia sesion",
+          "El vendedor sincroniza la data",
+          "El vendedor selecciona al cliente {string} {string}",
+          "registra una cobranza parcial con {string} {string} {string} y monto {string}",
+          "registra una cobranza total con {string} {string} {string}",
+          "El sistema muestra el mensaje de cobranza {string}"
+        ],
+        "detailed_steps": [
+          {
+            "type": "Given",
+            "text": "El vendedor inicia sesion",
+            "method": "elVendedorIniciaSesion"
+          },
+          {
+            "type": "And",
+            "text": "El vendedor sincroniza la data",
+            "method": "elVendedorSincronizaLaData"
+          },
+          {
+            "type": "When",
+            "text": "El vendedor selecciona al cliente {string} {string}",
+            "method": "elVendedorSeleccionaAlCliente"
+          },
+          {
+            "type": "When",
+            "text": "registra una cobranza parcial con {string} {string} {string} y monto {string}",
+            "method": "registraCobranzaParcial"
+          },
+          {
+            "type": "When",
+            "text": "registra una cobranza total con {string} {string} {string}",
+            "method": "registraCobranzaTotal"
+          },
+          {
+            "type": "Then",
+            "text": "El sistema muestra el mensaje de cobranza {string}",
+            "method": "sistemaMuestraMensajeCobranza"
+          }
+        ],
+        "frameworks": [],
+        "task_instances": [
+          {
+            "type": "Login",
+            "name": "login",
+            "class": "Login"
+          },
+          {
+            "type": "Synchronization",
+            "name": "synchronization",
+            "class": "Synchronization"
+          },
+          {
+            "type": "SearchCustomer",
+            "name": "searchCustomer",
+            "class": "SearchCustomer"
+          },
+          {
+            "type": "CobranzaScreen",
+            "name": "cobranzaScreen",
+            "class": "CobranzaScreen"
+          },
+          {
+            "type": "RegistrarCobranzaParcial",
+            "name": "registrarCobranzaParcial",
+            "class": "RegistrarCobranzaParcial"
+          }
+        ],
+        "sample_code": "@Given(\"El vendedor inicia sesion\")\npublic void elVendedorIniciaSesion() {\n    // Implementación aquí\n}\n\n@And(\"El vendedor sincroniza la data\")\npublic void elVendedorSincronizaLaData() {\n    // Implementación aquí\n}\n"
+      },
+      {
+        "file": "ListadoNoPedidoStepDefinition.java",
+        "steps": [
+          "El vendedor inicia sesion",
+          "El vendedor sincroniza la data",
+          "El vendedor selecciona al cliente {string} {string}",
+          "elimina el motivo no pedido",
+          "modifica el motivo no pedido",
+          "El Cliente tendra actualizado el motivo no pedido con el mensaje {string}",
+          "El Cliente tendra eliminado el motivo no pedido con el mensaje {string}"
+        ],
+        "detailed_steps": [
+          {
+            "type": "Given",
+            "text": "El vendedor inicia sesion",
+            "method": "elVendedorIniciaSesion"
+          },
+          {
+            "type": "And",
+            "text": "El vendedor sincroniza la data",
+            "method": "elVendedorSincronizaLaData"
+          },
+          {
+            "type": "When",
+            "text": "El vendedor selecciona al cliente {string} {string}",
+            "method": "elVendedorSeleccionaAlCliente"
+          },
+          {
+            "type": "When",
+            "text": "elimina el motivo no pedido",
+            "method": "eliminaMotivoNoPedido"
+          },
+          {
+            "type": "When",
+            "text": "modifica el motivo no pedido",
+            "method": "modificaMotivoNoPedido"
+          },
+          {
+            "type": "Then",
+            "text": "El Cliente tendra actualizado el motivo no pedido con el mensaje {string}",
+            "method": "clienteTendraActualizadoMotivoNoPedido"
+          },
+          {
+            "type": "Then",
+            "text": "El Cliente tendra eliminado el motivo no pedido con el mensaje {string}",
+            "method": "clienteTendraEliminadoMotivoNoPedido"
+          }
+        ],
+        "frameworks": [
+          "Cucumber"
+        ],
+        "task_instances": [
+          {
+            "type": "Synchronization",
+            "name": "synchronization",
+            "class": "Synchronization"
+          },
+          {
+            "type": "SearchCustomer",
+            "name": "searchCustomer",
+            "class": "SearchCustomer"
+          },
+          {
+            "type": "Login",
+            "name": "login",
+            "class": "Login"
+          },
+          {
+            "type": "EliminarMotivoNoPedido",
+            "name": "eliminarMotivoNoPedido",
+            "class": "EliminarMotivoNoPedido"
+          },
+          {
+            "type": "ModificarMotivoNoPedido",
+            "name": "modificarMotivoNoPedido",
+            "class": "ModificarMotivoNoPedido"
+          }
+        ],
+        "sample_code": "@Given(\"El vendedor inicia sesion\")\npublic void elVendedorIniciaSesion() {\n    // Implementación aquí\n}\n\n@And(\"El vendedor sincroniza la data\")\npublic void elVendedorSincronizaLaData() {\n    // Implementación aquí\n}\n"
+      },
+      {
+        "file": "LoginStepDefinition.java",
+        "steps": [
+          "el usuario abre el aplicativo Android",
+          "el usuario ingresa su nombre de empresa {string}, usuario {string} y contraseña {string}",
+          "el usuario debería ser redirigido al menu principal"
+        ],
+        "detailed_steps": [
+          {
+            "type": "Given",
+            "text": "el usuario abre el aplicativo Android",
+            "method": "elUsuarioAbreElAplicativoAndroid"
+          },
+          {
+            "type": "When",
+            "text": "el usuario ingresa su nombre de empresa {string}, usuario {string} y contraseña {string}",
+            "method": "eUsuarioIngresaEmpresaUsuarioyContrasena"
+          },
+          {
+            "type": "Then",
+            "text": "el usuario debería ser redirigido al menu principal",
+            "method": "elUsuaarioDeberiaSerRedirigidoAlMenuPrincipal"
+          }
+        ],
+        "frameworks": [
+          "Cucumber",
+          "Appium"
+        ],
+        "task_instances": [
+          {
+            "type": "DesiredCapabilities",
+            "name": "caps",
+            "class": "DesiredCapabilities"
+          }
+        ],
+        "sample_code": "@Given(\"el usuario abre el aplicativo Android\")\npublic void elUsuarioAbreElAplicativoAndroid() {\n    // Implementación aquí\n}\n\n@When(\"el usuario ingresa su nombre de empresa {string}, usuario {string} y contraseña {string}\")\npublic void eUsuarioIngresaEmpresaUsuarioyContrasena() {\n    // Implementación aquí\n}\n"
+      },
+      {
+        "file": "NoPedidoStepDefinition.java",
+        "steps": [
+          "El vendedor inicia sesion",
+          "El vendedor sincroniza la data",
+          "El vendedor selecciona al cliente {string} {string}",
+          "ingresa un no pedido",
+          "El Cliente tendra registrado un No Pedido con el mensaje {string}"
+        ],
+        "detailed_steps": [
+          {
+            "type": "Given",
+            "text": "El vendedor inicia sesion",
+            "method": "elVendedorIniciaSesion"
+          },
+          {
+            "type": "And",
+            "text": "El vendedor sincroniza la data",
+            "method": "elVendedorSincronizaLaData"
+          },
+          {
+            "type": "When",
+            "text": "El vendedor selecciona al cliente {string} {string}",
+            "method": "elVendedorSeleccionaAlCliente"
+          },
+          {
+            "type": "When",
+            "text": "ingresa un no pedido",
+            "method": "ingresaUnNoPedidoSeleccionandoElMotivo"
+          },
+          {
+            "type": "Then",
+            "text": "El Cliente tendra registrado un No Pedido con el mensaje {string}",
+            "method": "clienteTendraNoPedido"
+          }
+        ],
+        "frameworks": [
+          "Cucumber"
+        ],
+        "task_instances": [
+          {
+            "type": "Login",
+            "name": "login",
+            "class": "Login"
+          },
+          {
+            "type": "Synchronization",
+            "name": "synchronization",
+            "class": "Synchronization"
+          },
+          {
+            "type": "SearchCustomer",
+            "name": "searchCustomer",
+            "class": "SearchCustomer"
+          },
+          {
+            "type": "AddNoPedido",
+            "name": "noPedido",
+            "class": "AddNoPedido"
+          },
+          {
+            "type": "ListadoNoPedidoScreen",
+            "name": "listadoNoPedidoScreen",
+            "class": "ListadoNoPedidoScreen"
+          }
+        ],
+        "sample_code": "@Given(\"El vendedor inicia sesion\")\npublic void elVendedorIniciaSesion() {\n    // Implementación aquí\n}\n\n@And(\"El vendedor sincroniza la data\")\npublic void elVendedorSincronizaLaData() {\n    // Implementación aquí\n}\n"
+      },
+      {
+        "file": "OrderCreateStepDefinition.java",
+        "steps": [
+          "El vendedor inicia sesion",
+          "El vendedor sincroniza la data",
+          "El vendedor selecciona al cliente {string} {string}",
+          "ingresa los productos y sus cantidades {string} {string}",
+          "graba el pedido con el mensaje {string}",
+          "El vendedor selecciona un pedido",
+          "El vendedor modifica el pedido",
+          "graba la modificacion con el mensaje {string}",
+          "y el estado de Operacion {string}",
+          "El vendedor Anula el pedido",
+          "se actualiza el estado del Pedido a {string}",
+          "y el estado de Operacion de la Anulacion {string}"
+        ],
+        "detailed_steps": [
+          {
+            "type": "Given",
+            "text": "El vendedor inicia sesion",
+            "method": "elVendedorIniciaSesion"
+          },
+          {
+            "type": "And",
+            "text": "El vendedor sincroniza la data",
+            "method": "elVendedorSincronizaLaData"
+          },
+          {
+            "type": "When",
+            "text": "El vendedor selecciona al cliente {string} {string}",
+            "method": "elVendedorSeleccionaAlCliente"
+          },
+          {
+            "type": "And",
+            "text": "ingresa los productos y sus cantidades {string} {string}",
+            "method": "ingresaLosProductosYSusCantidades"
+          },
+          {
+            "type": "Then",
+            "text": "graba el pedido con el mensaje {string}",
+            "method": "grabaElPedidoConElMensaje"
+          },
+          {
+            "type": "And",
+            "text": "El vendedor selecciona un pedido",
+            "method": "elVendedorSeleccionaUnPedido"
+          },
+          {
+            "type": "When",
+            "text": "El vendedor modifica el pedido",
+            "method": "elVendedorModificaElPedido"
+          },
+          {
+            "type": "Then",
+            "text": "graba la modificacion con el mensaje {string}",
+            "method": "grabaLaModificacionConElMensaje"
+          },
+          {
+            "type": "And",
+            "text": "y el estado de Operacion {string}",
+            "method": "yElEstadoDeOperacion"
+          },
+          {
+            "type": "And",
+            "text": "El vendedor Anula el pedido",
+            "method": "elVendedorAnulaElPedido"
+          },
+          {
+            "type": "Then",
+            "text": "se actualiza el estado del Pedido a {string}",
+            "method": "seActualizaElEstadoDePedidoAAnulado"
+          },
+          {
+            "type": "And",
+            "text": "y el estado de Operacion de la Anulacion {string}",
+            "method": "yElEstadoDeOperacionDeLaAnulacion"
+          }
+        ],
+        "frameworks": [
+          "Cucumber"
+        ],
+        "task_instances": [
+          {
+            "type": "Synchronization",
+            "name": "synchronization",
+            "class": "Synchronization"
+          },
+          {
+            "type": "SearchCustomer",
+            "name": "searchCustomer",
+            "class": "SearchCustomer"
+          },
+          {
+            "type": "AddOrder",
+            "name": "addOrder",
+            "class": "AddOrder"
+          },
+          {
+            "type": "GotoOrder",
+            "name": "gotoOrder",
+            "class": "GotoOrder"
+          },
+          {
+            "type": "ModifyOrder",
+            "name": "modifyOrder",
+            "class": "ModifyOrder"
+          }
+        ],
+        "sample_code": "@Given(\"El vendedor inicia sesion\")\npublic void elVendedorIniciaSesion() {\n    // Implementación aquí\n}\n\n@And(\"El vendedor sincroniza la data\")\npublic void elVendedorSincronizaLaData() {\n    // Implementación aquí\n}\n"
+      }
+    ],
+    "utilities": [
+      {
+        "file": "JsonTestDataHelper.java",
+        "utility_type": "utility",
+        "utility_methods": [
+          "getInstance"
+        ],
+        "business_methods": [],
+        "screen_usage": [],
+        "sample_code": "package helper;\n\nimport com.google.gson.Gson;\nimport com.google.gson.reflect.TypeToken;\nimport com.google.gson.stream.JsonReader;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\n\nimport java.io.FileNotFoundException;\nimport java.io.FileReader;\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class JsonTestDataHelper {\n    private static JsonTestDataHel"
+      },
+      {
+        "file": "Login.java",
+        "utility_type": "task",
+        "utility_methods": [
+          "getEmpresa",
+          "getUsuario",
+          "getClave"
+        ],
+        "business_methods": [],
+        "screen_usage": [],
+        "sample_code": "package model;\n\npublic class Login {\n\n    private String empresa;\n    private String usuario;\n    private String clave;\n\n    public String getEmpresa() {\n        return empresa;\n    }\n\n    public String getUsuario() {\n        return usuario;\n    }\n\n    public String getClave() {\n        return clave;\n    }\n}\n"
+      },
+      {
+        "file": "AddOrder.java",
+        "utility_type": "task",
+        "utility_methods": [
+          "withTheData"
+        ],
+        "business_methods": [
+          "withTheData"
+        ],
+        "screen_usage": [
+          {
+            "screen": "OrderScreen",
+            "instance": "orderScreen"
+          },
+          {
+            "screen": "ProductScreen",
+            "instance": "productScreen"
+          },
+          {
+            "screen": "OrdersListScreen",
+            "instance": "ordersListScreen"
+          }
+        ],
+        "sample_code": "public class AddOrder {\n    OrderScreen orderScreen = new OrderScreen();\n\n    public void withTheData() {\n        // Lógica de negocio aquí\n    }\n}"
+      },
+      {
+        "file": "Login.java",
+        "utility_type": "task",
+        "utility_methods": [
+          "withTheData"
+        ],
+        "business_methods": [
+          "withTheData"
+        ],
+        "screen_usage": [
+          {
+            "screen": "LoginScreen",
+            "instance": "loginScreen"
+          }
+        ],
+        "sample_code": "public class Login {\n    LoginScreen loginScreen = new LoginScreen();\n\n    public void withTheData() {\n        // Lógica de negocio aquí\n    }\n}"
+      },
+      {
+        "file": "SearchCustomer.java",
+        "utility_type": "task",
+        "utility_methods": [
+          "selectCustomer"
+        ],
+        "business_methods": [],
+        "screen_usage": [
+          {
+            "screen": "CustomerListScreen",
+            "instance": "customerListScreen"
+          }
+        ],
+        "sample_code": "package task;\n\nimport activity.Customer.CustomerListScreen;\nimport helper.JsonTestDataHelper;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\n\npublic class SearchCustomer {\n\n    private static final Logger logger = LogManager.getLogger(JsonTestDataHelper.class);\n\n    CustomerListScreen customerListScreen = new CustomerListScreen();\n\n    public void selectCustome"
+      },
+      {
+        "file": "Synchronization.java",
+        "utility_type": "utility",
+        "utility_methods": [
+          "synchronizaData"
+        ],
+        "business_methods": [],
+        "screen_usage": [
+          {
+            "screen": "SynchronizationScreen",
+            "instance": "synchronizationScreen"
+          }
+        ],
+        "sample_code": "package task;\n\nimport activity.Synchronization.SynchronizationScreen;\nimport helper.JsonTestDataHelper;\nimport org.apache.logging.log4j.LogManager;\nimport org.apache.logging.log4j.Logger;\n\npublic class Synchronization {\n\n    private static final Logger logger = LogManager.getLogger(JsonTestDataHelper.class);\n    SynchronizationScreen synchronizationScreen = new SynchronizationScreen();\n\n    public"
+      }
+    ],
+    "test_data": []
   },
-  "training_prompt": "ENTRENAMIENTO ESPECIALIZADO - PROYECTO QA AUTOMATION\n\nTu misión es generar código de pruebas automáticas basándote EXCLUSIVAMENTE en los patrones y estructuras encontradas en este proyecto específico.\n\n=== PATRONES DEL PROYECTO ===\n\n🥒 CUCUMBER STEPS:\n- Steps: el usuario navega a la página de login, el usuario ingresa email {string} y contraseña {string}, el usuario hace clic en recordar sesión\n\n\n=== INSTRUCCIONES DE GENERACIÓN ===\n\n1. SIEMPRE usa los mismos nombres de clases, métodos y patrones encontrados arriba\n2. MANTÉN la estructura y convenciones del proyecto\n3. NO inventes nuevos patrones - usa solo los detectados\n4. Cuando generes Page Objects, usa la misma estructura de locators\n5. Cuando generes tests, usa los mismos tipos de assertions\n6. CREA archivos siguiendo la estructura de carpetas del proyecto\n\nRECUERDA: Eres un especialista en ESTE proyecto específico, no un experto genérico.\n=== PATRONES WEB DETECTADOS ===\n\n📄 WEB PAGES:\n- Clase: LoginPage\\n  Locators: []\\n  Controles: []\\n\\n\n\n🎯 WEB TASKS:\n- Task: LoginTask.java\\n  Métodos: ['withCredentials', 'withValidUser', 'withInvalidUser']\\n  Pages: []\\n\\n\n\n=== ARQUITECTURA HÍBRIDA ===\n\n🔄 CONVERSIÓN AUTOMÁTICA:\nMóvil → Web\n- Screen → Page\n- TextBox → WebTextBox  \n- Button → WebButton\n- Appium locators → Selenium locators\n\n📱 MÓVIL: Task-Screen-Control (Appium)\n🌐 WEB: Task-Page-Control (Selenium)\n\n=== REGLAS DE CONSISTENCIA ===\n\n1. ✅ MANTÉN la misma arquitectura en ambos tipos\n2. ✅ USA los mismos nombres de métodos de negocio\n3. ✅ CONVIERTE automáticamente entre móvil y web cuando sea necesario\n4. ✅ MANTÉN el estilo español para Cucumber steps\n5. ✅ USA patterns específicos detectados en el proyecto\n",
-  "project_path": "../../example-web-project"
+  "training_prompt": "ENTRENAMIENTO ESPECIALIZADO - PROYECTO QA AUTOMATION\n\nTu misión es generar código de pruebas automáticas basándote EXCLUSIVAMENTE en los patrones y estructuras encontradas en este proyecto específico.\n\n=== PATRONES DEL PROYECTO ===\n\n📄 PAGE OBJECTS DETECTADOS:\n- Clase: CobranzaScreen\n  Métodos: \n  Locators ejemplo: ['com.uniflex.flexbusinessandroid:id/tviTipoMedioPago', 'com.uniflex.flexbusinessandroid:id/tviMoneda', 'com.uniflex.flexbusinessandroid:id/tviTipoCambio']\n\n- Clase: CustomerInformationScreen\n  Métodos: \n  Locators ejemplo: ['(//android.widget.TextView)[1]']\n\n- Clase: CustomerListScreen\n  Métodos: \n  Locators ejemplo: ['com.uniflex.flexbusinessandroid:id/ibuClientes', '(//android.widget.CheckBox)[1]', '(//android.widget.CheckBox)[2]']\n\n🧪 ESTRUCTURA DE TESTS:\n- Archivo: OrderCreateStepDefinition.java\n  Métodos test: \n  Assertions: assertTrue, assertEquals\n\n🥒 CUCUMBER STEPS:\n- Steps: el sistema está en estado inicial, el usuario realiza la acción principal, se valida el resultado esperado\n\n- Steps: ..., ..., ...\n\n🛠️ UTILIDADES:\n- Métodos: getInstance\n\n- Métodos: getEmpresa, getUsuario, getClave\n\n\n=== INSTRUCCIONES DE GENERACIÓN ===\n\n1. SIEMPRE usa los mismos nombres de clases, métodos y patrones encontrados arriba\n2. MANTÉN la estructura y convenciones del proyecto\n3. NO inventes nuevos patrones - usa solo los detectados\n4. Cuando generes Page Objects, usa la misma estructura de locators\n5. Cuando generes tests, usa los mismos tipos de assertions\n6. CREA archivos siguiendo la estructura de carpetas del proyecto\n\nRECUERDA: Eres un especialista en ESTE proyecto específico, no un experto genérico.",
+  "project_path": "../FlexBusinessMobile-test-ui-with-ai"
 }

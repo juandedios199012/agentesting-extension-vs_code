@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
-  "displayName": "AgentestingMIA",
-  "description": "Agente IA para Automatización QA - Genera código de pruebas personalizado con tu API key de OpenAI. Requiere configuración inicial.",
-  "version": "17.0.0",
+  "displayName": "AgentestingMIA v18.0.0 - Móvil & Web",
+  "description": "Agente IA especializado en automatización QA móvil (Appium) y web (Selenium). Entrenado con FlexBusinessMobile. Requiere API key OpenAI.",
+  "version": "18.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
@@ -17,8 +17,11 @@
     "qa",
     "ai",
     "openai",
+    "appium",
     "selenium",
-    "pytest"
+    "mobile",
+    "android",
+    "cucumber"
   ],
   "repository": {
     "type": "git",
@@ -37,11 +40,11 @@
     "commands": [
       {
         "command": "Agentesting.showResultsPanel",
-        "title": "Agentesting Automatización de Pruebas"
+        "title": "🤖 AgentestingMIA v18.0.0 - Especialista Móvil + Web"
       },
       {
         "command": "Agentesting.showSetupGuide",
-        "title": "AgentestingMIA: Guía de Configuración"
+        "title": "⚙️ AgentestingMIA v18.0.0: Setup API Key"
       }
     ],
     "configuration": {
