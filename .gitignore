@@ -4,6 +4,9 @@ node_modules
 .vscode-test/
 *.vsix
 
+# Configuraciones locales de VS Code (NO subir al repo)
+.vscode/
+
 # Proyecto de entrenamiento (no subir al repo)
 FlexBusinessMobile-test-ui-with-ai/
 
@@ -16,7 +19,3 @@ agent-backend/__pycache__/
 # Archivos de configuración locales
 agent-backend/config_secreta.py
 agent-backend/.env
-
-# Archivos temporales de VS Code
-.vscode/extensions.json
-.vscode/settings.json
