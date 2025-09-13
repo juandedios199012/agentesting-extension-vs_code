@@ -1,0 +1,185 @@
+{
+  "web_automation_patterns": {
+    "page_objects": [
+      {
+        "file": "LoginPage.java",
+        "class_name": "LoginPage",
+        "locators": [
+          "id=email",
+          "id=password", 
+          "xpath=//button[@type='submit']",
+          "name=remember_me",
+          "css=.login-form"
+        ],
+        "web_controls": [
+          {
+            "type": "WebTextBox",
+            "name": "emailField"
+          },
+          {
+            "type": "WebTextBox", 
+            "name": "passwordField"
+          },
+          {
+            "type": "WebButton",
+            "name": "loginButton"
+          },
+          {
+            "type": "WebCheckBox",
+            "name": "rememberCheckbox"
+          }
+        ],
+        "action_methods": ["enterCredentials", "clickLogin", "isDisplayed"],
+        "sample_code": "public class LoginPage {\n    public WebTextBox emailField = new WebTextBox(By.id(\"email\"));\n    public WebTextBox passwordField = new WebTextBox(By.id(\"password\"));\n    public WebButton loginButton = new WebButton(By.xpath(\"//button[@type='submit']\"));\n    \n    public void enterCredentials(String email, String password) {\n        emailField.sendKeys(email);\n        passwordField.sendKeys(password);\n    }\n}"
+      },
+      {
+        "file": "ProductCatalogPage.java",
+        "class_name": "ProductCatalogPage", 
+        "locators": [
+          "css=.product-card",
+          "xpath=//button[text()='Add to Cart']",
+          "id=search-input",
+          "css=.price",
+          "name=category"
+        ],
+        "web_controls": [
+          {
+            "type": "WebTextBox",
+            "name": "searchBox"
+          },
+          {
+            "type": "WebDropdown",
+            "name": "categoryFilter"
+          },
+          {
+            "type": "WebButton",
+            "name": "addToCartButton"
+          },
+          {
+            "type": "WebLabel",
+            "name": "priceLabel"
+          }
+        ],
+        "action_methods": ["searchProduct", "selectCategory", "addToCart"],
+        "sample_code": "public class ProductCatalogPage {\n    public WebTextBox searchBox = new WebTextBox(By.id(\"search-input\"));\n    public WebDropdown categoryFilter = new WebDropdown(By.name(\"category\"));\n    public WebButton addToCartButton = new WebButton(By.xpath(\"//button[text()='Add to Cart']\"));\n    \n    public void searchProduct(String productName) {\n        searchBox.sendKeys(productName);\n    }\n}"
+      }
+    ],
+    "web_step_definitions": [
+      {
+        "file": "LoginStepDefinition.java",
+        "steps": [
+          "el usuario navega a la página de login",
+          "el usuario ingresa email {string} y contraseña {string}",
+          "el usuario hace clic en el botón de login",
+          "el usuario debe ser redirigido al dashboard"
+        ],
+        "detailed_steps": [
+          {
+            "type": "Given",
+            "text": "el usuario navega a la página de login", 
+            "method": "elUsuarioNavegaALogin"
+          },
+          {
+            "type": "When",
+            "text": "el usuario ingresa email {string} y contraseña {string}",
+            "method": "elUsuarioIngresaCredenciales"
+          },
+          {
+            "type": "And",
+            "text": "el usuario hace clic en el botón de login",
+            "method": "elUsuarioHaceClicLogin"
+          },
+          {
+            "type": "Then", 
+            "text": "el usuario debe ser redirigido al dashboard",
+            "method": "elUsuarioEsRedirigidoAlDashboard"
+          }
+        ],
+        "frameworks": ["Cucumber", "Selenium", "JUnit"],
+        "task_instances": [
+          {
+            "type": "LoginTask",
+            "name": "loginTask",
+            "class": "LoginTask"
+          }
+        ],
+        "sample_code": "@Given(\"el usuario navega a la página de login\")\npublic void elUsuarioNavegaALogin() {\n    driver.get(\"https://example.com/login\");\n}\n\n@When(\"el usuario ingresa email {string} y contraseña {string}\")\npublic void elUsuarioIngresaCredenciales(String email, String password) {\n    loginTask.enterCredentials(email, password);\n}"
+      }
+    ],
+    "web_tasks": [
+      {
+        "file": "LoginTask.java",
+        "utility_type": "web_task", 
+        "utility_methods": ["enterCredentials", "performLogin", "validateLogin"],
+        "business_methods": ["withCredentials", "withValidUser", "withInvalidUser"],
+        "screen_usage": [
+          {
+            "screen": "LoginPage",
+            "instance": "loginPage"
+          }
+        ],
+        "sample_code": "public class LoginTask {\n    LoginPage loginPage = new LoginPage();\n    \n    public void withCredentials(String email, String password) {\n        loginPage.enterCredentials(email, password);\n        loginPage.loginButton.click();\n    }\n    \n    public void withValidUser() {\n        withCredentials(\"user@test.com\", \"password123\");\n    }\n}"
+      },
+      {
+        "file": "ProductSearchTask.java",
+        "utility_type": "web_task",
+        "utility_methods": ["searchByName", "filterByCategory", "selectProduct"],
+        "business_methods": ["withSearchCriteria", "withCategory"],
+        "screen_usage": [
+          {
+            "screen": "ProductCatalogPage", 
+            "instance": "catalogPage"
+          }
+        ],
+        "sample_code": "public class ProductSearchTask {\n    ProductCatalogPage catalogPage = new ProductCatalogPage();\n    \n    public void withSearchCriteria(String productName) {\n        catalogPage.searchProduct(productName);\n    }\n    \n    public void withCategory(String category) {\n        catalogPage.categoryFilter.selectByText(category);\n    }\n}"
+      }
+    ],
+    "web_controls": [
+      {
+        "control_type": "WebTextBox",
+        "methods": ["sendKeys", "getText", "clear", "isDisplayed", "isEnabled"],
+        "usage": "public WebTextBox emailField = new WebTextBox(By.id(\"email\"));",
+        "sample_implementation": "public class WebTextBox extends WebElement {\n    public void sendKeys(String text) {\n        element.clear();\n        element.sendKeys(text);\n    }\n    \n    public String getText() {\n        return element.getAttribute(\"value\");\n    }\n}"
+      },
+      {
+        "control_type": "WebButton",
+        "methods": ["click", "isEnabled", "getText", "isDisplayed"],
+        "usage": "public WebButton submitButton = new WebButton(By.xpath(\"//button[@type='submit']\"));",
+        "sample_implementation": "public class WebButton extends WebElement {\n    public void click() {\n        WebDriverWait wait = new WebDriverWait(driver, 10);\n        wait.until(ExpectedConditions.elementToBeClickable(element));\n        element.click();\n    }\n}"
+      },
+      {
+        "control_type": "WebDropdown",
+        "methods": ["selectByText", "selectByValue", "selectByIndex", "getSelectedOption"],
+        "usage": "public WebDropdown countryDropdown = new WebDropdown(By.name(\"country\"));",
+        "sample_implementation": "public class WebDropdown extends WebElement {\n    public void selectByText(String text) {\n        Select select = new Select(element);\n        select.selectByVisibleText(text);\n    }\n}"
+      },
+      {
+        "control_type": "WebCheckBox",
+        "methods": ["check", "uncheck", "isChecked", "toggle"],
+        "usage": "public WebCheckBox termsCheckbox = new WebCheckBox(By.id(\"terms\"));",
+        "sample_implementation": "public class WebCheckBox extends WebElement {\n    public void check() {\n        if (!isChecked()) {\n            element.click();\n        }\n    }\n    \n    public boolean isChecked() {\n        return element.isSelected();\n    }\n}"
+      },
+      {
+        "control_type": "WebLabel",
+        "methods": ["getText", "isDisplayed", "getAttribute"],
+        "usage": "public WebLabel messageLabel = new WebLabel(By.css(\".message\"));",
+        "sample_implementation": "public class WebLabel extends WebElement {\n    public String getText() {\n        return element.getText();\n    }\n}"
+      }
+    ]
+  },
+  "web_training_prompt": "ENTRENAMIENTO ESPECIALIZADO - AUTOMATIZACIÓN WEB CON SELENIUM\n\nEres un experto en automatización de pruebas WEB especializado en mantener la misma arquitectura Task-Page-Control pero adaptada para aplicaciones web.\n\n=== ARQUITECTURA CONSISTENTE ===\n\n📱 MÓVIL (FlexBusinessMobile): Task-Screen-Control (Appium)\n🌐 WEB: Task-Page-Control (Selenium)\n\n=== PATRONES WEB EQUIVALENTES ===\n\n🔄 CONVERSIÓN DE PATRONES:\nMóvil → Web\n- LoginScreen.java → LoginPage.java\n- TextBox → WebTextBox\n- Button → WebButton\n- By.id(\"com.uniflex.flexbusinessandroid:id/...\") → By.id(\"...\")\n- Appium locators → Selenium locators\n\n📄 ESTRUCTURA DE WEB PAGE:\n```java\npublic class LoginPage {\n    public WebTextBox emailField = new WebTextBox(By.id(\"email\"));\n    public WebTextBox passwordField = new WebTextBox(By.id(\"password\"));\n    public WebButton loginButton = new WebButton(By.xpath(\"//button[@type='submit']\"));\n    \n    public void enterCredentials(String email, String password) {\n        emailField.sendKeys(email);\n        passwordField.sendKeys(password);\n    }\n}\n```\n\n🎯 ESTRUCTURA DE WEB TASK:\n```java\npublic class LoginTask {\n    LoginPage loginPage = new LoginPage();\n    \n    public void withCredentials(String email, String password) {\n        loginPage.enterCredentials(email, password);\n        loginPage.loginButton.click();\n    }\n}\n```\n\n🥒 WEB STEP DEFINITIONS:\n```java\n@Given(\"el usuario navega a la página de login\")\npublic void elUsuarioNavegaALogin() {\n    driver.get(\"https://example.com/login\");\n}\n\n@When(\"el usuario ingresa email {string} y contraseña {string}\")\npublic void elUsuarioIngresaCredenciales(String email, String password) {\n    loginTask.withCredentials(email, password);\n}\n```\n\n=== CONTROLES WEB ===\n\n🔧 WebTextBox: sendKeys(), getText(), clear(), isDisplayed()\n🔧 WebButton: click(), isEnabled(), getText()\n🔧 WebDropdown: selectByText(), selectByValue(), getSelectedOption()\n🔧 WebCheckBox: check(), uncheck(), isChecked()\n🔧 WebLabel: getText(), isDisplayed()\n\n=== LOCATORS WEB ===\n\n🎯 USAR SIEMPRE estos tipos de locators:\n- By.id(\"elemento\") - Preferido\n- By.name(\"nombre\")\n- By.xpath(\"//tag[@attribute='value']\")\n- By.css(\".class\") o By.css(\"#id\")\n- By.className(\"clase\")\n\n=== REGLAS DE CONVERSIÓN ===\n\n1. ✅ MANTÉN la misma arquitectura Task-Page-Control\n2. ✅ CONVIERTE Screen → Page, móvil controls → web controls\n3. ✅ USA los mismos nombres de métodos de negocio (withCredentials, withTheData, etc.)\n4. ✅ MANTÉN el estilo español para Cucumber steps\n5. ✅ USA WebDriverWait para elementos dinámicos\n6. ✅ INCLUYE assertions con assertEquals() para validaciones\n\n=== FRAMEWORKS WEB ===\n\n- Selenium WebDriver\n- Cucumber (mismo estilo que móvil)\n- JUnit (mismas assertions)\n- TestNG (alternativa a JUnit)\n- Page Factory (opcional para @FindBy)\n\nRECUERDA: Mantén la MISMA arquitectura y nomenclatura, solo cambia la tecnología (Appium → Selenium) y los controles (móvil → web).",
+  "consistency_rules": {
+    "naming_conventions": {
+      "pages": "NombrePage.java (ej: LoginPage.java, ProductPage.java)",
+      "tasks": "NombreTask.java (ej: LoginTask.java, SearchTask.java)", 
+      "controls": "WebNombreControl.java (ej: WebTextBox.java, WebButton.java)",
+      "step_definitions": "NombreStepDefinition.java (mismo patrón que móvil)"
+    },
+    "architectural_consistency": {
+      "mobile_pattern": "Task → Screen → AppiumControl",
+      "web_pattern": "Task → Page → WebControl",
+      "business_methods": "Mantener mismos nombres: withCredentials(), withTheData(), etc.",
+      "step_style": "Mantener español y misma estructura de Cucumber"
+    }
+  }
+}

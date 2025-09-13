@@ -3,3 +3,20 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+
+# Proyecto de entrenamiento (no subir al repo)
+FlexBusinessMobile-test-ui-with-ai/
+
+# Archivos temporales Python
+agent-backend/__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Archivos de configuración locales
+agent-backend/config_secreta.py
+agent-backend/.env
+
+# Archivos temporales de VS Code
+.vscode/extensions.json
+.vscode/settings.json

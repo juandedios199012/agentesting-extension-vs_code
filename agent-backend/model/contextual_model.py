@@ -32,7 +32,14 @@ class ContextualModel:
             safe_print("[WARNING] AgentestingMIA funcionando en modo limitado - Configure su API key de OpenAI para funcionalidad completa")
         else:
             self.demo_mode = False
-            self.llm = ChatOpenAI(temperature=0.2, model_name="gpt-3.5-turbo", openai_api_key=openai_api_key)
+            # OPTIMIZACIÓN: Configuración más rápida para GPT-3.5-turbo
+            self.llm = ChatOpenAI(
+                temperature=0.1,  # Menor temperatura = respuestas más rápidas y consistentes
+                model_name="gpt-3.5-turbo", 
+                openai_api_key=openai_api_key,
+                max_tokens=500,  # Limitar tokens para respuestas más rápidas
+                request_timeout=15  # Timeout de 15 segundos
+            )
             safe_print("[SUCCESS] AgentestingMIA funcionando con IA completa")
         
         self.index = index
@@ -40,6 +47,9 @@ class ContextualModel:
         self.model_path = model_path
         self.training_data = []
         self._load_training_data()
+        
+        # CACHE: Pre-construir contexto base para evitar recalcular
+        self._base_context = self._build_base_context()
     
     def _get_api_key(self):
         """Intenta obtener la API key de diferentes fuentes"""
@@ -71,68 +81,174 @@ class ContextualModel:
 
     def train_on_workspace(self, new_examples=None):
         """
-        Permite entrenar el agente con nuevos ejemplos/contexto del workspace.
-        El usuario puede agregar ejemplos de prompts y respuestas para mejorar el modelo.
+        OPTIMIZADO: Entrenamiento ligero y cache de contexto
         """
         if new_examples:
             self.training_data.extend(new_examples)
             self._save_training_data()
-        # Aquí podrías usar algoritmos ML/AI para ajustar el contexto, embeddings, etc.
-        # Por ahora, se almacena el historial para enriquecer el contexto de los prompts.
+        # Entrenamiento ligero - solo actualizar context cache si hay cambios
+        if not hasattr(self, '_base_context'):
+            self._base_context = self._build_base_context()
+
+    def _build_base_context(self):
+        """Construye contexto base una sola vez para reutilizar"""
+        # Intentar cargar entrenamiento especializado
+        specialized_training = self._load_specialized_training()
+        
+        context_examples = '\n'.join([
+            f"Prompt: {ex['prompt']}\nRespuesta: {ex['response']}" 
+            for ex in self.training_data[-3:]  # Solo últimos 3 ejemplos
+        ])
+        
+        base_context = f"""Eres AgentestingMIA, un agente experto en QA Automation especializado en generar código de pruebas.
+
+PROYECTO ACTUAL:
+- Frameworks detectados: {self.frameworks}
+- Archivos analizados: {self.index.get('total_files', 0)}
+
+{specialized_training}
+
+CAPACIDADES:
+1. Generar código de pruebas basado en patrones del proyecto
+2. Crear archivos automáticamente cuando sea necesario
+3. Sugerir mejores prácticas de QA
+
+FORMATO PARA CREAR ARCHIVOS:
+ARCHIVO: ruta/del/archivo.ext
+CONTENIDO:
+[código aquí]
+
+CONTEXTO PREVIO:
+{context_examples}
+
+Responde de forma concisa y específica."""
+
+        return base_context
+    
+    def _load_specialized_training(self):
+        """Carga entrenamiento especializado del proyecto (móvil/web/híbrido)"""
+        try:
+            import json
+            training_file = os.path.join(os.path.dirname(__file__), '..', 'training', 'training_data.json')
+            web_patterns_file = os.path.join(os.path.dirname(__file__), '..', 'training', 'web_automation_patterns.json')
+            
+            specialized_context = ""
+            
+            # Cargar entrenamiento principal
+            if os.path.exists(training_file):
+                with open(training_file, 'r', encoding='utf-8') as f:
+                    training_data = json.load(f)
+                    
+                specialized_context += training_data.get('training_prompt', '')
+                project_type = training_data.get('project_type', 'mobile')
+                frameworks = training_data.get('frameworks', [])
+                
+                # Información del proyecto
+                specialized_context += f"\n\n=== INFORMACIÓN DEL PROYECTO ===\n"
+                specialized_context += f"Tipo: {project_type}\n"
+                specialized_context += f"Frameworks: {', '.join(frameworks)}\n"
+                
+                # Si tiene patrones web también
+                if 'web_pages' in training_data and training_data['web_pages']:
+                    specialized_context += "\n🌐 PROYECTO HÍBRIDO DETECTADO - Móvil + Web\n"
+                    specialized_context += "Usa la misma arquitectura Task-Page/Screen-Control para ambos tipos.\n"
+            
+            # Cargar patrones web base si existen
+            if os.path.exists(web_patterns_file):
+                with open(web_patterns_file, 'r', encoding='utf-8') as f:
+                    web_data = json.load(f)
+                    web_prompt = web_data.get('web_training_prompt', '')
+                    if web_prompt:
+                        specialized_context += f"\n\n{web_prompt}"
+            
+            if specialized_context:
+                return specialized_context
+            else:
+                return self._create_basic_training()
+            
+        except Exception as e:
+            return "INSTRUCCIÓN: Genera código de automatización de pruebas siguiendo mejores prácticas."
+    
+    def _create_basic_training(self):
+        """Crea entrenamiento básico basado en archivos detectados"""
+        sample_files = self.index.get('files', [])[:5]  # Primeros 5 archivos
+        
+        training = """
+=== ENTRENAMIENTO PROYECTO ESPECÍFICO ===
+
+IMPORTANTE: Debes generar código que siga los patrones encontrados en este proyecto.
+
+ARCHIVOS DETECTADOS:
+"""
+        
+        for file_path in sample_files:
+            try:
+                filename = os.path.basename(file_path)
+                if 'page' in filename.lower():
+                    training += f"📄 Page Object: {filename}\n"
+                elif 'test' in filename.lower():
+                    training += f"🧪 Test: {filename}\n"
+                elif 'step' in filename.lower():
+                    training += f"🥒 Step Definition: {filename}\n"
+                elif '.feature' in filename:
+                    training += f"📝 Feature: {filename}\n"
+            except:
+                continue
+        
+        training += f"""
+FRAMEWORKS DETECTADOS: {self.frameworks}
+
+INSTRUCCIONES:
+1. Usa SOLO los patrones de este proyecto
+2. Mantén la estructura de carpetas detectada
+3. No inventes nuevos frameworks - usa los detectados
+4. Genera código consistente con el proyecto existente
+"""
+        
+        return training
 
     def generate_response(self, prompt):
         # Si está en modo demo (sin API key), guía al usuario a configurar
         if self.demo_mode:
             return self._generate_setup_guidance(prompt)
         
-        # Detecta saludos simples para respuestas más amigables
+        # OPTIMIZACIÓN: Respuestas rápidas para saludos sin llamar API
         if self._is_simple_greeting(prompt):
             return self._generate_friendly_greeting()
         
-        # Usa LangChain y el historial de entrenamiento para generar una respuesta contextual
-        context_examples = '\n'.join([
-            f"Prompt: {ex['prompt']}\nRespuesta: {ex['response']}" for ex in self.training_data[-5:]
-        ])
-        
-        # Construye el mensaje del sistema con instrucciones para crear archivos
-        system_message = f"""Eres un agente experto en QA Automation que puede crear archivos automáticamente. 
-        
-El proyecto usa los siguientes frameworks: {self.frameworks}.
-
-INSTRUCCIONES IMPORTANTES:
-1. Cuando generes código completo (clases, funciones, tests), SIEMPRE crea el archivo automáticamente
-2. Usa el formato EXACTO: ARCHIVO: ruta/del/archivo.ext\\nCONTENIDO:\\n[código aquí]
-3. Sugiere rutas apropiadas basadas en el tipo de código:
-   - Tests: tests/ o test/
-   - Clases principales: src/ o lib/
-   - Configuración: config/ o .
-   - Page Objects (Selenium): pages/ o page_objects/
-   - Utilities: utils/ o helpers/
-
-EJEMPLOS DE CUÁNDO CREAR ARCHIVOS:
-- "Crea una clase LoginPage" → Crear archivo
-- "Crea tests de login" → Crear archivo
-- "Genera un test de API" → Crear archivo
-- "Explica cómo hacer X" → NO crear archivo (solo explicar)
-
-Ejemplos previos de entrenamiento:
-{context_examples}
-
-Responde el siguiente prompt de forma contextual y específica al proyecto."""
-
-        # Usa el formato de mensajes correcto para ChatOpenAI
+        # OPTIMIZACIÓN: Usar contexto pre-construido
         try:
-            messages = [
-                HumanMessage(content=f"{system_message}\n\nPrompt: {prompt}")
-            ]
+            # Usar contexto base + prompt específico
+            final_message = f"{self._base_context}\n\nSOLICITUD: {prompt}"
+            
+            messages = [HumanMessage(content=final_message)]
             response = self.llm.invoke(messages)
-            # Si la respuesta es un objeto, extrae el contenido
+            
+            # Guardar interacción para aprendizaje futuro
+            self._save_interaction(prompt, response.content if hasattr(response, 'content') else str(response))
+            
             if hasattr(response, 'content'):
                 return response.content
             else:
                 return str(response)
         except Exception as e:
             return f"Error al generar respuesta: {str(e)}"
+    
+    def _save_interaction(self, prompt, response):
+        """Guarda interacciones para mejorar el contexto"""
+        try:
+            # Solo guardar interacciones útiles (no saludos)
+            if not self._is_simple_greeting(prompt) and len(response) > 50:
+                self.training_data.append({
+                    'prompt': prompt[:100],  # Truncar para eficiencia
+                    'response': response[:200]
+                })
+                # Mantener solo últimos 10 ejemplos
+                if len(self.training_data) > 10:
+                    self.training_data = self.training_data[-10:]
+                self._save_training_data()
+        except:
+            pass
     
     def _generate_setup_guidance(self, prompt):
         """Guía al usuario para configurar su API key de OpenAI"""

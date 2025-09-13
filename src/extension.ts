@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         panel.webview.onDidReceiveMessage(async message => {
             if (message.type === 'enviarPrompt') {
-                const respuesta = await ejecutarAgentePython(message.prompt);
+                const respuesta = await ejecutarAgentePython(message.prompt, message.archivoAdjunto);
                 
                 // Detectar si el agente quiere crear un archivo automáticamente
                 const match = respuesta.match(/ARCHIVO:\s*(.*)\nCONTENIDO:\n([\s\S]*)/);
@@ -164,10 +164,38 @@ function getWebviewContent(): string {
                 color: #00e6fe;
                 background: #23272f;
                 margin-bottom: 12px;
-                transition: background 0.2s;
+                transition: all 0.2s;
+                cursor: pointer;
             }
             .drop-zone.dragover {
                 background: #1a1d23;
+                border-color: #00ff88;
+                transform: scale(1.02);
+            }
+            .drop-zone.has-file {
+                background: #1a2d1a;
+                border-color: #00ff88;
+                color: #00ff88;
+            }
+            .file-info {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                font-size: 0.9rem;
+            }
+            .remove-file {
+                background: #ff4444;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             button {
                 background: linear-gradient(90deg, #00e6fe 0%, #007acc 100%);
@@ -272,16 +300,24 @@ function getWebviewContent(): string {
         <script>
             const vscode = acquireVsCodeApi();
             let history = [];
+            let archivoAdjunto = null;
+            
             document.getElementById('promptForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const prompt = document.getElementById('prompt').value;
                 addToHistory(prompt);
-                vscode.postMessage({ type: 'enviarPrompt', prompt });
+                vscode.postMessage({ 
+                    type: 'enviarPrompt', 
+                    prompt,
+                    archivoAdjunto 
+                });
             });
+            
             function addToHistory(prompt) {
                 history.unshift(prompt);
                 renderHistory();
             }
+            
             function renderHistory() {
                 const list = document.getElementById('historyList');
                 list.innerHTML = '';
@@ -295,31 +331,78 @@ function getWebviewContent(): string {
                     list.appendChild(li);
                 });
             }
+            
             function copyRespuesta() {
                 const respuesta = document.getElementById('respuesta').textContent;
                 navigator.clipboard.writeText(respuesta);
             }
-            // Drag & drop archivos
+            
+            function removeFile() {
+                archivoAdjunto = null;
+                updateDropZone();
+            }
+            
+            function updateDropZone() {
+                const dropZone = document.getElementById('dropZone');
+                if (archivoAdjunto) {
+                    dropZone.classList.add('has-file');
+                    dropZone.innerHTML = 
+                        '<div class="file-info">' +
+                            '📁 ' + archivoAdjunto.nombre + ' (' + Math.round(archivoAdjunto.contenido.length / 1024) + 'KB)' +
+                            '<button class="remove-file" onclick="removeFile()" title="Quitar archivo">×</button>' +
+                        '</div>';
+                } else {
+                    dropZone.classList.remove('has-file');
+                    dropZone.innerHTML = 'Arrastra aquí archivos para analizar';
+                }
+            }
+            
+            // Drag & drop archivos mejorado
             const dropZone = document.getElementById('dropZone');
+            
+            dropZone.addEventListener('click', () => {
+                if (archivoAdjunto) {
+                    removeFile();
+                }
+            });
+            
             dropZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropZone.classList.add('dragover');
             });
+            
             dropZone.addEventListener('dragleave', (e) => {
                 dropZone.classList.remove('dragover');
             });
+            
             dropZone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropZone.classList.remove('dragover');
                 const files = e.dataTransfer.files;
+                
                 if (files.length > 0) {
+                    const file = files[0];
                     const reader = new FileReader();
+                    
                     reader.onload = function(evt) {
-                        document.getElementById('prompt').value = evt.target.result;
+                        archivoAdjunto = {
+                            nombre: file.name,
+                            contenido: evt.target.result,
+                            tipo: file.type
+                        };
+                        updateDropZone();
+                        
+                        // Auto-generar prompt si está vacío
+                        const promptField = document.getElementById('prompt');
+                        if (!promptField.value.trim()) {
+                            promptField.value = 'Analiza este archivo y sugiere mejoras basándote en los patrones del proyecto:\\n\\nArchivo: ' + file.name;
+                        }
                     };
-                    reader.readAsText(files[0]);
+                    
+                    reader.readAsText(file);
                 }
             });
+            
             window.addEventListener('message', event => {
                 const message = event.data;
                 if (message.type === 'respuestaAgente') {
@@ -327,12 +410,17 @@ function getWebviewContent(): string {
                     
                     // Mostrar notificación si se creó un archivo automáticamente
                     if (message.respuesta.includes('Archivo creado/modificado automáticamente:')) {
-                        // Resaltar la creación de archivos en la respuesta
                         const respuestaElement = document.getElementById('respuesta');
                         respuestaElement.style.borderLeft = '4px solid #00ff88';
                         setTimeout(() => {
                             respuestaElement.style.borderLeft = 'none';
                         }, 3000);
+                    }
+                    
+                    // Limpiar archivo adjunto después de procesar
+                    if (archivoAdjunto) {
+                        archivoAdjunto = null;
+                        updateDropZone();
                     }
                 }
             });
@@ -345,8 +433,21 @@ function getWebviewContent(): string {
 // This method is called when your extension is deactivated
 export function deactivate() {}
 
+// Helper para obtener extensión de archivo
+function getFileExtension(filename: string): string {
+    const ext = filename.split('.').pop()?.toLowerCase();
+    switch(ext) {
+        case 'java': return 'java';
+        case 'py': return 'python';
+        case 'js': return 'javascript';
+        case 'ts': return 'typescript';
+        case 'feature': return 'gherkin';
+        default: return 'text';
+    }
+}
+
 // Ejecuta el agente Python embebido en la extensión y retorna la respuesta
-async function ejecutarAgentePython(prompt: string): Promise<string> {
+async function ejecutarAgentePython(prompt: string, archivoAdjunto?: any): Promise<string> {
     const { exec } = require('child_process');
     const fs = require('fs');
     const path = require('path');
@@ -412,13 +513,32 @@ async function ejecutarAgentePython(prompt: string): Promise<string> {
     }
     
     return new Promise((resolve) => {
+        // Prepara el prompt completo incluyendo archivo adjunto si existe
+        let promptCompleto = prompt;
+        
+        if (archivoAdjunto) {
+            promptCompleto = `${prompt}
+
+📁 **ARCHIVO ADJUNTO: ${archivoAdjunto.nombre}**
+
+\`\`\`${getFileExtension(archivoAdjunto.nombre)}
+${archivoAdjunto.contenido}
+\`\`\`
+
+INSTRUCCIONES:
+1. Analiza el código adjunto basándote en el entrenamiento especializado del proyecto
+2. Identifica patrones móviles (Appium) o web (Selenium)  
+3. Sugiere mejoras específicas usando la arquitectura Task-Screen/Page-Control
+4. Propón código optimizado siguiendo los estándares detectados`;
+        }
+        
         // Prepara el entorno con la API key del usuario
         const env = { 
             ...process.env,
             OPENAI_API_KEY: userApiKey || ''
         };
         
-        exec(`python "${agentPath}" "${prompt}"`, { 
+        exec(`python "${agentPath}" "${promptCompleto}"`, { 
             cwd: workspaceRoot,
             env: env
         }, (error: any, stdout: string, stderr: string) => {

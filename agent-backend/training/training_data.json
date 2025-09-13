@@ -1,0 +1,157 @@
+{
+  "page_objects": [],
+  "test_methods": [],
+  "step_definitions": [
+    {
+      "file": "LoginStepDefinition.java",
+      "steps": [
+        "el usuario navega a la página de login",
+        "el usuario ingresa email {string} y contraseña {string}",
+        "el usuario hace clic en recordar sesión",
+        "el usuario debe ser redirigido al dashboard",
+        "se muestra un mensaje de error {string}"
+      ],
+      "detailed_steps": [
+        {
+          "type": "Given",
+          "text": "el usuario navega a la página de login",
+          "method": "elUsuarioNavegaALaPaginaDeLogin"
+        },
+        {
+          "type": "When",
+          "text": "el usuario ingresa email {string} y contraseña {string}",
+          "method": "elUsuarioIngresaEmailYContrasena"
+        },
+        {
+          "type": "And",
+          "text": "el usuario hace clic en recordar sesión",
+          "method": "elUsuarioHaceClicEnRecordarSesion"
+        },
+        {
+          "type": "Then",
+          "text": "el usuario debe ser redirigido al dashboard",
+          "method": "elUsuarioDebeSerRedirigidoAlDashboard"
+        },
+        {
+          "type": "Then",
+          "text": "se muestra un mensaje de error {string}",
+          "method": "seMuestraUnMensajeDeError"
+        }
+      ],
+      "frameworks": [
+        "Cucumber"
+      ],
+      "task_instances": [],
+      "sample_code": "@Given(\"el usuario navega a la página de login\")\npublic void elUsuarioNavegaALaPaginaDeLogin() {\n    // Implementación aquí\n}\n\n@When(\"el usuario ingresa email {string} y contraseña {string}\")\npublic void elUsuarioIngresaEmailYContrasena() {\n    // Implementación aquí\n}\n"
+    }
+  ],
+  "utilities": [],
+  "test_data": [],
+  "web_pages": [
+    {
+      "file": "LoginPage.java",
+      "class_name": "LoginPage",
+      "locators": [],
+      "web_controls": [],
+      "action_methods": [
+        "clickLogin"
+      ],
+      "automation_type": "web",
+      "sample_code": "package pages;\n\nimport org.openqa.selenium.By;\nimport org.openqa.selenium.WebDriver;\nimport org.openqa.selenium.WebElement;\nimport org.openqa.selenium.support.FindBy;\n\npublic class LoginPage {\n    \n    private WebDriver driver;\n    \n    // Web Elements usando Selenium\n    @FindBy(id = \"email\")\n    p"
+    }
+  ],
+  "web_tasks": [
+    {
+      "file": "LoginTask.java",
+      "utility_type": "web_task",
+      "business_methods": [
+        "withCredentials",
+        "withValidUser",
+        "withInvalidUser",
+        "withRememberMe"
+      ],
+      "page_usage": [],
+      "automation_type": "web",
+      "sample_code": "package tasks;\n\nimport pages.LoginPage;\nimport org.openqa.selenium.WebDriver;\n\npublic class LoginTask {\n    \n    private LoginPage loginPage;\n    \n    public LoginTask(WebDriver driver) {\n        this.loginPage = new LoginPage(driver);\n    }\n    \n    public void withCredentials(String email, String password) {\n        loginPage.enterEmail(email);\n        loginPage.enterPassword(password);\n        "
+    }
+  ],
+  "web_controls": [
+    {
+      "control_type": "WebTextBox",
+      "methods": [
+        "sendKeys",
+        "getText",
+        "clear",
+        "isDisplayed",
+        "isEnabled"
+      ],
+      "usage": "public WebTextBox emailField = new WebTextBox(By.id(\"email\"));",
+      "sample_implementation": "public class WebTextBox extends WebElement {\n    public void sendKeys(String text) {\n        element.clear();\n        element.sendKeys(text);\n    }\n    \n    public String getText() {\n        return element.getAttribute(\"value\");\n    }\n}"
+    },
+    {
+      "control_type": "WebButton",
+      "methods": [
+        "click",
+        "isEnabled",
+        "getText",
+        "isDisplayed"
+      ],
+      "usage": "public WebButton submitButton = new WebButton(By.xpath(\"//button[@type='submit']\"));",
+      "sample_implementation": "public class WebButton extends WebElement {\n    public void click() {\n        WebDriverWait wait = new WebDriverWait(driver, 10);\n        wait.until(ExpectedConditions.elementToBeClickable(element));\n        element.click();\n    }\n}"
+    },
+    {
+      "control_type": "WebDropdown",
+      "methods": [
+        "selectByText",
+        "selectByValue",
+        "selectByIndex",
+        "getSelectedOption"
+      ],
+      "usage": "public WebDropdown countryDropdown = new WebDropdown(By.name(\"country\"));",
+      "sample_implementation": "public class WebDropdown extends WebElement {\n    public void selectByText(String text) {\n        Select select = new Select(element);\n        select.selectByVisibleText(text);\n    }\n}"
+    },
+    {
+      "control_type": "WebCheckBox",
+      "methods": [
+        "check",
+        "uncheck",
+        "isChecked",
+        "toggle"
+      ],
+      "usage": "public WebCheckBox termsCheckbox = new WebCheckBox(By.id(\"terms\"));",
+      "sample_implementation": "public class WebCheckBox extends WebElement {\n    public void check() {\n        if (!isChecked()) {\n            element.click();\n        }\n    }\n    \n    public boolean isChecked() {\n        return element.isSelected();\n    }\n}"
+    },
+    {
+      "control_type": "WebLabel",
+      "methods": [
+        "getText",
+        "isDisplayed",
+        "getAttribute"
+      ],
+      "usage": "public WebLabel messageLabel = new WebLabel(By.css(\".message\"));",
+      "sample_implementation": "public class WebLabel extends WebElement {\n    public String getText() {\n        return element.getText();\n    }\n}"
+    }
+  ],
+  "project_type": "web",
+  "frameworks": [
+    "Selenium",
+    "Cucumber",
+    "JUnit"
+  ],
+  "consistency_rules": {
+    "naming_conventions": {
+      "pages": "NombrePage.java (ej: LoginPage.java, ProductPage.java)",
+      "tasks": "NombreTask.java (ej: LoginTask.java, SearchTask.java)",
+      "controls": "WebNombreControl.java (ej: WebTextBox.java, WebButton.java)",
+      "step_definitions": "NombreStepDefinition.java (mismo patrón que móvil)"
+    },
+    "architectural_consistency": {
+      "mobile_pattern": "Task → Screen → AppiumControl",
+      "web_pattern": "Task → Page → WebControl",
+      "business_methods": "Mantener mismos nombres: withCredentials(), withTheData(), etc.",
+      "step_style": "Mantener español y misma estructura de Cucumber"
+    }
+  },
+  "training_prompt": "ENTRENAMIENTO ESPECIALIZADO - PROYECTO QA AUTOMATION\n\nTu misión es generar código de pruebas automáticas basándote EXCLUSIVAMENTE en los patrones y estructuras encontradas en este proyecto específico.\n\n=== PATRONES DEL PROYECTO ===\n\n🥒 CUCUMBER STEPS:\n- Steps: el usuario navega a la página de login, el usuario ingresa email {string} y contraseña {string}, el usuario hace clic en recordar sesión\n\n\n=== INSTRUCCIONES DE GENERACIÓN ===\n\n1. SIEMPRE usa los mismos nombres de clases, métodos y patrones encontrados arriba\n2. MANTÉN la estructura y convenciones del proyecto\n3. NO inventes nuevos patrones - usa solo los detectados\n4. Cuando generes Page Objects, usa la misma estructura de locators\n5. Cuando generes tests, usa los mismos tipos de assertions\n6. CREA archivos siguiendo la estructura de carpetas del proyecto\n\nRECUERDA: Eres un especialista en ESTE proyecto específico, no un experto genérico.\n=== PATRONES WEB DETECTADOS ===\n\n📄 WEB PAGES:\n- Clase: LoginPage\\n  Locators: []\\n  Controles: []\\n\\n\n\n🎯 WEB TASKS:\n- Task: LoginTask.java\\n  Métodos: ['withCredentials', 'withValidUser', 'withInvalidUser']\\n  Pages: []\\n\\n\n\n=== ARQUITECTURA HÍBRIDA ===\n\n🔄 CONVERSIÓN AUTOMÁTICA:\nMóvil → Web\n- Screen → Page\n- TextBox → WebTextBox  \n- Button → WebButton\n- Appium locators → Selenium locators\n\n📱 MÓVIL: Task-Screen-Control (Appium)\n🌐 WEB: Task-Page-Control (Selenium)\n\n=== REGLAS DE CONSISTENCIA ===\n\n1. ✅ MANTÉN la misma arquitectura en ambos tipos\n2. ✅ USA los mismos nombres de métodos de negocio\n3. ✅ CONVIERTE automáticamente entre móvil y web cuando sea necesario\n4. ✅ MANTÉN el estilo español para Cucumber steps\n5. ✅ USA patterns específicos detectados en el proyecto\n",
+  "project_path": "../../example-web-project"
+}

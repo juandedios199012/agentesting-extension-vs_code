@@ -7,3 +7,192 @@
 [2025-07-24 02:26:24] [INFO] Analizando workspace completo: .
 [2025-07-24 02:26:33] [WARNING] No se encontraron archivos relevantes en el workspace.
 [2025-07-24 02:26:33] [INFO] Análisis global del workspace finalizado.
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario.txt
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario2.txt
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario3.txt
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\login.feature
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\Order.feature
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\cobranza.feature
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\cobranza_deposito.feature
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\listado_no_pedido.feature
+[2025-09-10 00:56:34] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\no_pedido.feature
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: HistoriaUsuario.txt
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: HistoriaUsuario.txt
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: HistoriaUsuario.txt
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: HistoriaUsuario.txt
+[2025-09-10 00:56:34] [INFO] Archivo feature generado: HistoriaUsuario_gen1.feature
+[2025-09-10 00:56:34] [INFO] Archivo steps generado: HistoriaUsuario_gen1_steps.java
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: HistoriaUsuario2.txt
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: HistoriaUsuario2.txt
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: HistoriaUsuario2.txt
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: HistoriaUsuario2.txt
+[2025-09-10 00:56:34] [INFO] Archivo feature generado: HistoriaUsuario2_gen1.feature
+[2025-09-10 00:56:34] [INFO] Archivo steps generado: HistoriaUsuario2_gen1_steps.java
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: HistoriaUsuario3.txt
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: HistoriaUsuario3.txt
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: HistoriaUsuario3.txt
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: HistoriaUsuario3.txt
+[2025-09-10 00:56:34] [INFO] Archivo feature generado: HistoriaUsuario3_gen1.feature
+[2025-09-10 00:56:34] [INFO] Archivo steps generado: HistoriaUsuario3_gen1_steps.java
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: login.feature
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: login.feature
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: login.feature
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: login.feature
+[2025-09-10 00:56:34] [INFO] Archivo feature generado: login_gen1.feature
+[2025-09-10 00:56:34] [INFO] Archivo steps generado: login_gen1_steps.java
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: Order.feature
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: Order.feature
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: Order.feature
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: Order.feature
+[2025-09-10 00:56:34] [INFO] Archivo feature generado: Order_gen1.feature
+[2025-09-10 00:56:34] [INFO] Archivo steps generado: Order_gen1_steps.java
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: features\cobranza.feature
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: features\cobranza.feature
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: features\cobranza.feature
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: features\cobranza.feature
+[2025-09-10 00:56:34] [ERROR] No se pudo generar el archivo feature para features\cobranza.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_gen1.feature'
+[2025-09-10 00:56:34] [ERROR] No se pudo generar el archivo steps para features\cobranza.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_gen1_steps.java'
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: features\cobranza_deposito.feature
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: features\cobranza_deposito.feature
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: features\cobranza_deposito.feature
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: features\cobranza_deposito.feature
+[2025-09-10 00:56:34] [ERROR] No se pudo generar el archivo feature para features\cobranza_deposito.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_deposito_gen1.feature'
+[2025-09-10 00:56:34] [ERROR] No se pudo generar el archivo steps para features\cobranza_deposito.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_deposito_gen1_steps.java'
+[2025-09-10 00:56:34] [INFO] Generando archivo feature para: features\listado_no_pedido.feature
+[2025-09-10 00:56:34] [INFO] Archivo feature generado para: features\listado_no_pedido.feature
+[2025-09-10 00:56:34] [INFO] Generando step definitions para: features\listado_no_pedido.feature
+[2025-09-10 00:56:34] [INFO] Archivo step definitions generado para: features\listado_no_pedido.feature
+[2025-09-10 00:56:35] [ERROR] No se pudo generar el archivo feature para features\listado_no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\listado_no_pedido_gen1.feature'
+[2025-09-10 00:56:35] [ERROR] No se pudo generar el archivo steps para features\listado_no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\listado_no_pedido_gen1_steps.java'
+[2025-09-10 00:56:35] [INFO] Generando archivo feature para: features\no_pedido.feature
+[2025-09-10 00:56:35] [INFO] Archivo feature generado para: features\no_pedido.feature
+[2025-09-10 00:56:35] [INFO] Generando step definitions para: features\no_pedido.feature
+[2025-09-10 00:56:35] [INFO] Archivo step definitions generado para: features\no_pedido.feature
+[2025-09-10 00:56:35] [ERROR] No se pudo generar el archivo feature para features\no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\no_pedido_gen1.feature'
+[2025-09-10 00:56:35] [ERROR] No se pudo generar el archivo steps para features\no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\no_pedido_gen1_steps.java'
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario.txt
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario2.txt
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario3.txt
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\login.feature
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\Order.feature
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\cobranza.feature
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\cobranza_deposito.feature
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\listado_no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: HistoriaUsuario.txt
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: HistoriaUsuario.txt
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: HistoriaUsuario.txt
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: HistoriaUsuario.txt
+[2025-09-10 01:22:22] [INFO] Archivo feature generado: HistoriaUsuario_gen1.feature
+[2025-09-10 01:22:22] [INFO] Archivo steps generado: HistoriaUsuario_gen1_steps.java
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: HistoriaUsuario2.txt
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: HistoriaUsuario2.txt
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: HistoriaUsuario2.txt
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: HistoriaUsuario2.txt
+[2025-09-10 01:22:22] [INFO] Archivo feature generado: HistoriaUsuario2_gen1.feature
+[2025-09-10 01:22:22] [INFO] Archivo steps generado: HistoriaUsuario2_gen1_steps.java
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: HistoriaUsuario3.txt
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: HistoriaUsuario3.txt
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: HistoriaUsuario3.txt
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: HistoriaUsuario3.txt
+[2025-09-10 01:22:22] [INFO] Archivo feature generado: HistoriaUsuario3_gen1.feature
+[2025-09-10 01:22:22] [INFO] Archivo steps generado: HistoriaUsuario3_gen1_steps.java
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: login.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: login.feature
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: login.feature
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: login.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado: login_gen1.feature
+[2025-09-10 01:22:22] [INFO] Archivo steps generado: login_gen1_steps.java
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: Order.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: Order.feature
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: Order.feature
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: Order.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado: Order_gen1.feature
+[2025-09-10 01:22:22] [INFO] Archivo steps generado: Order_gen1_steps.java
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: features\cobranza.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: features\cobranza.feature
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: features\cobranza.feature
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: features\cobranza.feature
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo feature para features\cobranza.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_gen1.feature'
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo steps para features\cobranza.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_gen1_steps.java'
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: features\cobranza_deposito.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: features\cobranza_deposito.feature
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: features\cobranza_deposito.feature
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: features\cobranza_deposito.feature
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo feature para features\cobranza_deposito.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_deposito_gen1.feature'
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo steps para features\cobranza_deposito.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_deposito_gen1_steps.java'
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: features\listado_no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: features\listado_no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: features\listado_no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: features\listado_no_pedido.feature
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo feature para features\listado_no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\listado_no_pedido_gen1.feature'
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo steps para features\listado_no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\listado_no_pedido_gen1_steps.java'
+[2025-09-10 01:22:22] [INFO] Generando archivo feature para: features\no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Archivo feature generado para: features\no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Generando step definitions para: features\no_pedido.feature
+[2025-09-10 01:22:22] [INFO] Archivo step definitions generado para: features\no_pedido.feature
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo feature para features\no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\no_pedido_gen1.feature'
+[2025-09-10 01:22:22] [ERROR] No se pudo generar el archivo steps para features\no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\no_pedido_gen1_steps.java'
+[2025-09-12 23:56:47] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario.txt
+[2025-09-12 23:56:47] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario2.txt
+[2025-09-12 23:56:47] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\HistoriaUsuario3.txt
+[2025-09-12 23:56:47] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\login.feature
+[2025-09-12 23:56:48] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\Order.feature
+[2025-09-12 23:56:48] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\cobranza.feature
+[2025-09-12 23:56:48] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\cobranza_deposito.feature
+[2025-09-12 23:56:48] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\listado_no_pedido.feature
+[2025-09-12 23:56:48] [INFO] Archivo relevante cargado: E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/resources\features\no_pedido.feature
+[2025-09-12 23:56:48] [INFO] Generando archivo feature para: HistoriaUsuario.txt
+[2025-09-12 23:56:48] [INFO] Archivo feature generado para: HistoriaUsuario.txt
+[2025-09-12 23:56:48] [INFO] Generando step definitions para: HistoriaUsuario.txt
+[2025-09-12 23:56:48] [INFO] Archivo step definitions generado para: HistoriaUsuario.txt
+[2025-09-12 23:56:48] [INFO] Archivo feature generado: HistoriaUsuario_gen1.feature
+[2025-09-12 23:56:48] [INFO] Archivo steps generado: HistoriaUsuario_gen1_steps.java
+[2025-09-12 23:56:48] [INFO] Generando archivo feature para: HistoriaUsuario2.txt
+[2025-09-12 23:56:48] [INFO] Archivo feature generado para: HistoriaUsuario2.txt
+[2025-09-12 23:56:48] [INFO] Generando step definitions para: HistoriaUsuario2.txt
+[2025-09-12 23:56:48] [INFO] Archivo step definitions generado para: HistoriaUsuario2.txt
+[2025-09-12 23:56:48] [INFO] Archivo feature generado: HistoriaUsuario2_gen1.feature
+[2025-09-12 23:56:48] [INFO] Archivo steps generado: HistoriaUsuario2_gen1_steps.java
+[2025-09-12 23:56:48] [INFO] Generando archivo feature para: HistoriaUsuario3.txt
+[2025-09-12 23:56:48] [INFO] Archivo feature generado para: HistoriaUsuario3.txt
+[2025-09-12 23:56:48] [INFO] Generando step definitions para: HistoriaUsuario3.txt
+[2025-09-12 23:56:48] [INFO] Archivo step definitions generado para: HistoriaUsuario3.txt
+[2025-09-12 23:56:49] [INFO] Archivo feature generado: HistoriaUsuario3_gen1.feature
+[2025-09-12 23:56:49] [INFO] Archivo steps generado: HistoriaUsuario3_gen1_steps.java
+[2025-09-12 23:56:49] [INFO] Generando archivo feature para: login.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado para: login.feature
+[2025-09-12 23:56:49] [INFO] Generando step definitions para: login.feature
+[2025-09-12 23:56:49] [INFO] Archivo step definitions generado para: login.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado: login_gen1.feature
+[2025-09-12 23:56:49] [INFO] Archivo steps generado: login_gen1_steps.java
+[2025-09-12 23:56:49] [INFO] Generando archivo feature para: Order.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado para: Order.feature
+[2025-09-12 23:56:49] [INFO] Generando step definitions para: Order.feature
+[2025-09-12 23:56:49] [INFO] Archivo step definitions generado para: Order.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado: Order_gen1.feature
+[2025-09-12 23:56:49] [INFO] Archivo steps generado: Order_gen1_steps.java
+[2025-09-12 23:56:49] [INFO] Generando archivo feature para: features\cobranza.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado para: features\cobranza.feature
+[2025-09-12 23:56:49] [INFO] Generando step definitions para: features\cobranza.feature
+[2025-09-12 23:56:49] [INFO] Archivo step definitions generado para: features\cobranza.feature
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo feature para features\cobranza.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_gen1.feature'
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo steps para features\cobranza.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_gen1_steps.java'
+[2025-09-12 23:56:49] [INFO] Generando archivo feature para: features\cobranza_deposito.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado para: features\cobranza_deposito.feature
+[2025-09-12 23:56:49] [INFO] Generando step definitions para: features\cobranza_deposito.feature
+[2025-09-12 23:56:49] [INFO] Archivo step definitions generado para: features\cobranza_deposito.feature
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo feature para features\cobranza_deposito.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_deposito_gen1.feature'
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo steps para features\cobranza_deposito.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\cobranza_deposito_gen1_steps.java'
+[2025-09-12 23:56:49] [INFO] Generando archivo feature para: features\listado_no_pedido.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado para: features\listado_no_pedido.feature
+[2025-09-12 23:56:49] [INFO] Generando step definitions para: features\listado_no_pedido.feature
+[2025-09-12 23:56:49] [INFO] Archivo step definitions generado para: features\listado_no_pedido.feature
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo feature para features\listado_no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\listado_no_pedido_gen1.feature'
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo steps para features\listado_no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\listado_no_pedido_gen1_steps.java'
+[2025-09-12 23:56:49] [INFO] Generando archivo feature para: features\no_pedido.feature
+[2025-09-12 23:56:49] [INFO] Archivo feature generado para: features\no_pedido.feature
+[2025-09-12 23:56:49] [INFO] Generando step definitions para: features\no_pedido.feature
+[2025-09-12 23:56:49] [INFO] Archivo step definitions generado para: features\no_pedido.feature
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo feature para features\no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\no_pedido_gen1.feature'
+[2025-09-12 23:56:49] [ERROR] No se pudo generar el archivo steps para features\no_pedido.feature: [Errno 2] No such file or directory: 'E:/Cursos/DiplomadoTesting-Bolivia/Proyecto-Final-Diplomado-Software-Testing_v3/FlexBusinessMobile-test-ui-with-ai/src/test/generated\\features\\no_pedido_gen1_steps.java'
