@@ -530,9 +530,9 @@ async function ejecutarAgentePython(prompt: string, archivoAdjunto?: any): Promi
     const fs = require('fs');
     const path = require('path');
     
-    // Usa la ruta interna del backend embebido en la extensión (OPTIMIZADA)
+    // Usa la ruta interna del backend embebido en la extensión (TEMPORAL - DIAGNÓSTICO)
     const extensionPath = vscode.extensions.getExtension('AgentestingMIA.agentestingmia')?.extensionPath || __dirname;
-    const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'agente.py'); // Cambiado a agente.py directo
+    const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'test_agent.py'); // TEMPORAL: usar test_agent para diagnosticar
     const workspaceRoot = vscode.workspace.rootPath || process.cwd();
     
     // Busca la API key en orden de prioridad:
@@ -629,14 +629,29 @@ INSTRUCCIONES:
                 if (error.code === 'TIMEOUT') {
                     resolve('❌ **Timeout**: El agente tardó más de 30 segundos. Intenta con un prompt más específico.');
                 } else {
-                    resolve(`❌ **Error del agente**: ${stderr || error.message}\n\n💡 **Sugerencias:**\n- Verifica que Python esté instalado\n- Revisa la configuración de la API key\n- Intenta con un prompt más simple`);
+                    // DIAGNÓSTICO MEJORADO: Mostrar más información del error
+                    const errorInfo = `❌ **Error del agente**: 
+**Código de error:** ${error.code || 'N/A'}
+**Mensaje:** ${error.message || 'N/A'}
+**STDERR:** ${stderr || 'N/A'}
+**Ruta del agente:** ${agentPath}
+**Directorio de trabajo:** ${workspaceRoot}
+
+💡 **Sugerencias:**
+- Verifica que Python esté instalado y en el PATH
+- Revisa la configuración de la API key
+- Intenta con un prompt más simple
+- Consulta la consola de VS Code para más detalles`;
+                    resolve(errorInfo);
                 }
             } else {
                 const respuesta = stdout.trim();
                 if (respuesta.includes('[SUCCESS]')) {
                     resolve(respuesta.replace('[SUCCESS]', '✅ **[SUCCESS]**'));
+                } else if (respuesta.length === 0) {
+                    resolve('⚠️ **El agente no devolvió respuesta**. Esto puede indicar:\n- Problemas con las dependencias de Python\n- Error en la configuración de la API key\n- El agente se ejecutó pero no generó salida\n\nVerifica la consola de VS Code para más detalles.');
                 } else {
-                    resolve(respuesta || '⚠️ El agente no devolvió respuesta. Intenta nuevamente.');
+                    resolve(respuesta || '⚠️ El agente ejecutó pero no devolvió contenido válido.');
                 }
             }
         });
