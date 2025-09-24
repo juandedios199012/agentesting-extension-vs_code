@@ -530,9 +530,9 @@ async function ejecutarAgentePython(prompt: string, archivoAdjunto?: any): Promi
     const fs = require('fs');
     const path = require('path');
     
-    // Usa la ruta interna del backend embebido en la extensión (TEMPORAL - DIAGNÓSTICO)
+    // Usa la ruta interna del backend real
     const extensionPath = vscode.extensions.getExtension('AgentestingMIA.agentestingmia')?.extensionPath || __dirname;
-    const agentPath = path.join(extensionPath, 'out', 'agent-backend', 'test_agent.py'); // TEMPORAL: usar test_agent para diagnosticar
+    const agentPath = path.join(extensionPath, 'agent-backend', 'cli.py'); // Backend real
     const workspaceRoot = vscode.workspace.rootPath || process.cwd();
     
     // Busca la API key en orden de prioridad:
