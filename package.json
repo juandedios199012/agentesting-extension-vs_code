@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
-  "displayName": "🤖 AgentestingMIA v22.0.0 - Diagnóstico Mejorado",
-  "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con diagnóstico mejorado para resolver problemas v22.0.0",
-  "version": "22.0.0",
+  "displayName": "🤖 AgentestingMIA v23.0.0 - Diagnóstico Mejorado",
+  "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con diagnóstico mejorado para resolver problemas v23.0.0",
+  "version": "23.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
@@ -40,11 +40,11 @@
     "commands": [
       {
         "command": "Agentesting.showResultsPanel",
-  "title": "🤖 AgentestingMIA v22.0.0 - Diagnóstico Mejorado"
+  "title": "🤖 AgentestingMIA v23.0.0 - Diagnóstico Mejorado"
       },
       {
         "command": "Agentesting.showSetupGuide",
-  "title": "⚙️ AgentestingMIA v22.0.0: Setup API Key"
+  "title": "⚙️ AgentestingMIA v23.0.0: Setup API Key"
       }
     ],
     "configuration": {
