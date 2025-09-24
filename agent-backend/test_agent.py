@@ -8,22 +8,22 @@ import os
 def simple_agent_test():
     """Test simple del agente"""
     try:
-        print("🔧 [DEBUG] Iniciando test del agente...")
+    print("[DEBUG] Iniciando test del agente...")
         
         # Verificar API key
         api_key = os.environ.get('OPENAI_API_KEY')
         if not api_key:
-            print("❌ No se encontró OPENAI_API_KEY")
+            print("No se encontró OPENAI_API_KEY")
             return "ERROR: No hay API key configurada"
         
-        print(f"✅ API Key encontrada: {api_key[:10]}...")
+    print(f"API Key encontrada: {api_key[:10]}...")
         
         # Verificar LangChain
         try:
             from langchain_openai import ChatOpenAI
-            print("✅ LangChain importado correctamente")
+            print("LangChain importado correctamente")
         except ImportError as e:
-            print(f"❌ Error importando LangChain: {e}")
+            print(f"Error importando LangChain: {e}")
             return "ERROR: LangChain no disponible"
         
         # Test básico con OpenAI
@@ -55,7 +55,7 @@ Responde de forma específica y práctica. Si piden automatización móvil, sugi
 """)])
         
         result = response.content if hasattr(response, 'content') else str(response)
-        print("✅ Respuesta generada exitosamente")
+    print("Respuesta generada exitosamente")
         return result
         
     except Exception as e:
