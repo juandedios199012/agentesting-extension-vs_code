@@ -63,7 +63,6 @@ def main():
     except Exception:
         # Imprimir traceback completo para diagnóstico
         safe_print('--- TRACEBACK ---')
-        import traceback
         safe_print(traceback.format_exc())
         else:
             safe_print("No se recibió prompt.")
