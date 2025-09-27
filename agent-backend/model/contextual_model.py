@@ -13,11 +13,14 @@ import pickle
 
 def safe_print(message):
     """Print seguro que evita errores de codificación en Windows"""
+    import sys
     try:
-        print(message)
-    except UnicodeEncodeError:
-        # Si hay error de codificación, usa ASCII
-        print(message.encode('ascii', 'replace').decode('ascii'))
+        if hasattr(sys.stdout, 'buffer'):
+            sys.stdout.buffer.write((str(message) + '\n').encode('utf-8', 'replace'))
+        else:
+            print(str(message))
+    except Exception:
+        print(str(message).encode('utf-8', 'replace').decode('utf-8', 'replace'))
 
 
 class ContextualModel:
@@ -50,6 +53,9 @@ class ContextualModel:
         
         # CACHE: Pre-construir contexto base para evitar recalcular
         self._base_context = self._build_base_context()
+
+        # CACHE LOCAL DE RESPUESTAS
+        self._response_cache = {}
     
     def _get_api_key(self):
         """Intenta obtener la API key de diferentes fuentes"""
@@ -239,6 +245,11 @@ INSTRUCCIONES:
             return self._generate_setup_guidance(prompt)
 
         try:
+            # Caching local: si el prompt ya fue respondido, devolver respuesta cacheada
+            cache_key = prompt.strip().lower()
+            if cache_key in self._response_cache:
+                return self._response_cache[cache_key]
+
             # Si es automatización, agrega contexto especializado
             if self._is_automation_request(prompt):
                 final_message = f"{self._base_context}\n\nSOLICITUD: {prompt}"
@@ -253,9 +264,13 @@ INSTRUCCIONES:
             self._save_interaction(prompt, response.content if hasattr(response, 'content') else str(response))
 
             if hasattr(response, 'content'):
-                return response.content
+                result = response.content
             else:
-                return str(response)
+                result = str(response)
+
+            # Guardar en cache local
+            self._response_cache[cache_key] = result
+            return result
         except Exception as e:
             return f"Error al generar respuesta: {str(e)}"
     
