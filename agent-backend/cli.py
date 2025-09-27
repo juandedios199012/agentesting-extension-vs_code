@@ -37,7 +37,8 @@ def get_cached_model(workspace_path):
 
 def main():
     # OPTIMIZACIÓN: Usar cache y inicialización lazy
-    workspace_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    # Usar el directorio de trabajo actual para mayor robustez
+    workspace_path = os.getcwd()
     
     import traceback
     try:
@@ -59,6 +60,11 @@ def main():
                 # Para otros prompts, respuesta directa
                 response = model.generate_response(prompt)
                 safe_print(response)
+    except Exception:
+        # Imprimir traceback completo para diagnóstico
+        safe_print('--- TRACEBACK ---')
+        import traceback
+        safe_print(traceback.format_exc())
         else:
             safe_print("No se recibió prompt.")
 

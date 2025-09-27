@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
-  "displayName": "🤖 AgentestingMIA v29.0.0 - Creación Automática",
-  "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con creación automática de archivos, caching local y optimización de velocidad v29.0.0",
-  "version": "29.0.0",
+  "displayName": "🤖 AgentestingMIA v30.0.0 - Diagnóstico Mejorado",
+  "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con diagnóstico mejorado, creación automática de archivos y caching local v30.0.0",
+  "version": "30.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
@@ -40,11 +40,11 @@
     "commands": [
       {
         "command": "Agentesting.showResultsPanel",
-  "title": "🤖 AgentestingMIA v29.0.0 - Creación Automática"
+  "title": "🤖 AgentestingMIA v30.0.0 - Diagnóstico Mejorado"
       },
       {
         "command": "Agentesting.showSetupGuide",
-  "title": "⚙️ AgentestingMIA v29.0.0: Setup API Key"
+  "title": "⚙️ AgentestingMIA v30.0.0: Setup API Key"
       }
     ],
     "configuration": {
