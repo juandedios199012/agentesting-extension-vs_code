@@ -37,10 +37,7 @@ def get_cached_model(workspace_path):
 
 def main():
     # OPTIMIZACIÓN: Usar cache y inicialización lazy
-    # Usar el directorio de trabajo actual para mayor robustez
-    workspace_path = os.getcwd()
-    
-    import traceback
+    workspace_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     try:
         model, index = get_cached_model(workspace_path)
 
@@ -61,12 +58,8 @@ def main():
                 response = model.generate_response(prompt)
                 safe_print(response)
     except Exception:
-        # Imprimir traceback completo para diagnóstico
-        safe_print('--- TRACEBACK ---')
+        import traceback
         safe_print(traceback.format_exc())
-    # Si no se recibió prompt
-    if len(sys.argv) <= 1:
-        safe_print("No se recibió prompt.")
 
 if __name__ == "__main__":
     main()
