@@ -64,12 +64,9 @@ def main():
         # Imprimir traceback completo para diagnóstico
         safe_print('--- TRACEBACK ---')
         safe_print(traceback.format_exc())
-        else:
-            safe_print("No se recibió prompt.")
-
-    except Exception as e:
-        safe_print(f"Error en el agente: {str(e)}")
-        traceback.print_exc()
+    # Si no se recibió prompt
+    if len(sys.argv) <= 1:
+        safe_print("No se recibió prompt.")
 
 if __name__ == "__main__":
     main()
