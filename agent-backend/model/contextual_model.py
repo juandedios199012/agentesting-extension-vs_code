@@ -24,6 +24,11 @@ def safe_print(message):
 
 
 class ContextualModel:
+    def _is_affirmative(self, prompt):
+        """Detecta si el prompt es una confirmación afirmativa para crear archivos"""
+        affirmatives = ["sí", "si", "procede", "crea los archivos", "hazlo", "ok", "dale", "confirmo", "crear", "crear archivos", "procede con la creación"]
+        prompt_lower = prompt.lower().strip()
+        return any(a in prompt_lower for a in affirmatives)
     def __init__(self, index, model_path='context_model.pkl'):
         # Intenta obtener la API key de diferentes fuentes
         openai_api_key = self._get_api_key()
@@ -250,6 +255,13 @@ INSTRUCCIONES:
             if cache_key in self._response_cache:
                 return self._response_cache[cache_key]
 
+            # Si el prompt es afirmativo y hay una acción pendiente de creación, ejecuta la creación de archivos
+            if hasattr(self, '_pending_creation') and self._pending_creation and self._is_affirmative(prompt):
+                result = self._create_files_from_pending()
+                self._pending_creation = None
+                self._response_cache[cache_key] = result
+                return result
+
             # Si es automatización, agrega contexto especializado
             if self._is_automation_request(prompt):
                 final_message = f"{self._base_context}\n\nSOLICITUD: {prompt}"
@@ -259,6 +271,10 @@ INSTRUCCIONES:
 
             messages = [HumanMessage(content=final_message)]
             response = self.llm.invoke(messages)
+
+            # Si la respuesta contiene archivos a crear, guardar como pendiente
+            if self._detect_files_to_create(response):
+                self._pending_creation = response
 
             # Guardar interacción para aprendizaje futuro
             self._save_interaction(prompt, response.content if hasattr(response, 'content') else str(response))
@@ -273,6 +289,29 @@ INSTRUCCIONES:
             return result
         except Exception as e:
             return f"Error al generar respuesta: {str(e)}"
+    def _detect_files_to_create(self, response):
+        """Detecta si la respuesta contiene archivos a crear (por ejemplo, bloques ARCHIVO: ... CONTENIDO:)"""
+        text = response.content if hasattr(response, 'content') else str(response)
+        return "ARCHIVO:" in text and "CONTENIDO:" in text
+
+    def _create_files_from_pending(self):
+        """Crea los archivos detectados en la respuesta pendiente"""
+        import re
+        text = self._pending_creation.content if hasattr(self._pending_creation, 'content') else str(self._pending_creation)
+        # Buscar bloques de archivo
+        pattern = r"ARCHIVO:\s*(.*?)\n```(.*?)```"
+        matches = re.findall(pattern, text, re.DOTALL)
+        created = []
+        for file_path, code in matches:
+            abs_path = os.path.abspath(file_path.strip())
+            os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+            with open(abs_path, "w", encoding="utf-8") as f:
+                f.write(code.strip())
+            created.append(abs_path)
+        if created:
+            return f"✅ Archivos creados:\n" + "\n".join(created)
+        else:
+            return "No se detectaron archivos para crear."
     
     def _save_interaction(self, prompt, response):
         """Guarda interacciones para mejorar el contexto"""
