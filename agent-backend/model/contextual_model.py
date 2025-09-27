@@ -35,7 +35,7 @@ class ContextualModel:
             # OPTIMIZACIÓN: Configuración más rápida para GPT-3.5-turbo
             self.llm = ChatOpenAI(
                 temperature=0.1,  # Menor temperatura = respuestas más rápidas y consistentes
-                model_name="gpt-3.5-turbo", 
+                model_name="gpt-4-turbo", 
                 openai_api_key=openai_api_key,
                 max_tokens=500,  # Limitar tokens para respuestas más rápidas
                 request_timeout=15  # Timeout de 15 segundos
@@ -237,26 +237,21 @@ INSTRUCCIONES:
         # Si está en modo demo (sin API key), guía al usuario a configurar
         if self.demo_mode:
             return self._generate_setup_guidance(prompt)
-        
-        # OPTIMIZACIÓN: Respuestas rápidas para saludos sin llamar API
-        if self._is_simple_greeting(prompt):
-            return self._generate_friendly_greeting()
-        
-        # DETECCIÓN AUTOMÁTICA: Si pide automatización, ser específico
-        if self._is_automation_request(prompt):
-            return self._generate_specific_automation_response(prompt)
-        
-        # OPTIMIZACIÓN: Usar contexto pre-construido
+
         try:
-            # Usar contexto base + prompt específico
-            final_message = f"{self._base_context}\n\nSOLICITUD: {prompt}"
-            
+            # Si es automatización, agrega contexto especializado
+            if self._is_automation_request(prompt):
+                final_message = f"{self._base_context}\n\nSOLICITUD: {prompt}"
+            else:
+                # Para cualquier frase, solo envía el prompt al modelo
+                final_message = prompt
+
             messages = [HumanMessage(content=final_message)]
             response = self.llm.invoke(messages)
-            
+
             # Guardar interacción para aprendizaje futuro
             self._save_interaction(prompt, response.content if hasattr(response, 'content') else str(response))
-            
+
             if hasattr(response, 'content'):
                 return response.content
             else:
