@@ -39,13 +39,14 @@ def main():
     # OPTIMIZACIÓN: Usar cache y inicialización lazy
     workspace_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     
+    import traceback
     try:
         model, index = get_cached_model(workspace_path)
-        
+
         # Recibe el prompt desde la extensión
         if len(sys.argv) > 1:
             prompt = sys.argv[1]
-            
+
             # OPTIMIZACIÓN: Respuesta directa sin inicializar generator para prompts simples
             if prompt.lower().startswith('crear clase'):
                 # Solo para creación de clases cargar el generator
@@ -60,9 +61,10 @@ def main():
                 safe_print(response)
         else:
             safe_print("No se recibió prompt.")
-            
+
     except Exception as e:
         safe_print(f"Error en el agente: {str(e)}")
+        traceback.print_exc()
 
 if __name__ == "__main__":
     main()
