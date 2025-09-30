@@ -60,7 +60,10 @@ def main():
                 safe_print(response)
     except Exception:
         import traceback
-        safe_print(traceback.format_exc())
+        import os
+        safe_print("[ERROR] Traceback:\n" + traceback.format_exc())
+        safe_print(f"[ERROR] sys.argv: {sys.argv}")
+        safe_print(f"[ERROR] cwd: {os.getcwd()}")
 
 if __name__ == "__main__":
     main()

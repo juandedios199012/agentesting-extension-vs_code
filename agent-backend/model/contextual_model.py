@@ -244,6 +244,15 @@ INSTRUCCIONES:
         if self.demo_mode:
             return self._generate_setup_guidance(prompt)
 
+        # Detectar confirmación para crear archivos
+        confirm_words = ['sí', 'si', 'procede', 'hazlo', 'crear', 'crea', 'ok', 'dale']
+        if prompt.strip().lower() in confirm_words:
+            # Aquí deberías tener la lógica para crear los archivos sugeridos
+            # Simulación: crear archivos sugeridos en el último prompt
+            # En producción, deberías guardar el último prompt de sugerencia
+            created_files = self._create_suggested_files()
+            return f"✅ Archivos creados automáticamente:\n{created_files}"
+
         try:
             # Caching local: si el prompt ya fue respondido, devolver respuesta cacheada
             cache_key = prompt.strip().lower()
@@ -273,6 +282,26 @@ INSTRUCCIONES:
             return result
         except Exception as e:
             return f"Error al generar respuesta: {str(e)}"
+
+    def _create_suggested_files(self):
+        # Simulación: crea archivos de ejemplo
+        # En producción, deberías usar la sugerencia previa y generar el código real
+        files = [
+            ('src/test/LoginScreen.java', 'public class LoginScreen {}'),
+            ('src/test/ProductScreen.java', 'public class ProductScreen {}'),
+            ('src/test/OrderScreen.java', 'public class OrderScreen {}'),
+            ('src/test/LoginStepDefinition.java', 'public class LoginStepDefinition {}'),
+        ]
+        created = []
+        for path, content in files:
+            try:
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                with open(path, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                created.append(f"{path}")
+            except Exception as e:
+                created.append(f"{path} (error: {e})")
+        return '\n'.join(created)
     
     def _save_interaction(self, prompt, response):
         """Guarda interacciones para mejorar el contexto"""
