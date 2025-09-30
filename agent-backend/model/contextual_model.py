@@ -284,32 +284,31 @@ INSTRUCCIONES:
             return f"Error al generar respuesta: {str(e)}"
 
     def _create_suggested_files(self):
-        # Extraer nombres y contenido de clases de la última respuesta generada
-        # Buscar en el cache local la última respuesta relevante
         import re
         files = []
-        # Buscar la última respuesta que contenga 'ARCHIVO:' o bloques de código java
+        # Buscar la última respuesta relevante con código
         for key in reversed(list(self._response_cache.keys())):
             response = self._response_cache[key]
-            # Extraer archivos con formato ARCHIVO:
-            matches = re.findall(r'ARCHIVO: ([^\n]+)\n```java\n([\s\S]+?)```', response)
-            for file_path, code in matches:
-                files.append((file_path.strip(), code.strip()))
-            # Si no hay formato ARCHIVO, buscar bloques de código java y asignar nombres genéricos
+            # Extraer bloques de código markdown (```java ... ``` y ``` ... ```)
+            code_blocks = re.findall(r'```(?:java)?\n([\s\S]+?)```', response)
+            # Extraer nombres sugeridos en la respuesta (por ejemplo, **NombreArchivo.java**)
+            name_blocks = re.findall(r'- \*\*(\w+\.java)\*\*', response)
+            # Si hay bloques y nombres, los empareja
+            for i, code in enumerate(code_blocks):
+                name = name_blocks[i] if i < len(name_blocks) else f'GeneratedClass{i+1}.java'
+                files.append((f'src/test/{name}', code.strip()))
+            # Si no hay bloques markdown, buscar clases Java en texto plano
             if not files:
-                code_blocks = re.findall(r'```java\n([\s\S]+?)```', response)
-                # Nombres sugeridos por el usuario
-                suggested_names = [
-                    'CustomerInformationScreen.java',
-                    'ManageCustomerTask.java',
-                    'CustomerManagementStepDefinition.java'
-                ]
-                for i, code in enumerate(code_blocks):
-                    name = suggested_names[i] if i < len(suggested_names) else f'GeneratedClass{i+1}.java'
-                    files.append((f'src/test/{name}', code.strip()))
+                # Busca todas las declaraciones de clase Java
+                class_blocks = re.findall(r'(public class [A-Za-z0-9_]+[\s\S]+?\})', response)
+                for i, class_code in enumerate(class_blocks):
+                    # Intenta extraer el nombre de la clase
+                    m = re.match(r'public class ([A-Za-z0-9_]+)', class_code)
+                    name = f'{m.group(1)}.java' if m else f'GeneratedClass{i+1}.java'
+                    files.append((f'src/test/{name}', class_code.strip()))
             if files:
                 break
-        # Si no se encontró nada, fallback a ejemplo
+        # Si no se encontró nada, fallback a ejemplo vacío
         if not files:
             files = [
                 ('src/test/CustomerInformationScreen.java', 'public class CustomerInformationScreen {}'),
