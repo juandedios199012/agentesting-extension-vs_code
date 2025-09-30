@@ -1,12 +1,12 @@
 import sys
 import os
+import traceback
 print("[DIAGNOSTIC] cli.py iniciado. sys.argv:", sys.argv)
 
 """
 cli.py
 Punto de entrada OPTIMIZADO del backend. Inicialización rápida con lazy loading y cache.
 """
-import os
 from indexer.workspace_indexer import WorkspaceIndexer
 from model.contextual_model import ContextualModel, safe_print
 from generator.code_generator import CodeGenerator
@@ -60,8 +60,6 @@ def main():
                 response = model.generate_response(prompt)
                 safe_print(response)
     except Exception:
-        import traceback
-        import os
         safe_print("[ERROR] Traceback:\n" + traceback.format_exc())
         safe_print(f"[ERROR] sys.argv: {sys.argv}")
         safe_print(f"[ERROR] cwd: {os.getcwd()}")
