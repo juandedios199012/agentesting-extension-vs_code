@@ -1,8 +1,8 @@
 {
   "name": "agentestingmia",
-  "displayName": "🤖 AgentestingMIA v33.0.0 - Diagnóstico Ejecución",
-  "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con diagnóstico de ejecución en backend v33.0.0",
-  "version": "33.0.0",
+  "displayName": "🤖 AgentestingMIA v34.0.0 - Diagnóstico Ejecución",
+  "description": "🚀 Agente IA especializado en automatización móvil (Appium) y web (Selenium) con diagnóstico de ejecución en backend v34.0.0",
+  "version": "34.0.0",
   "publisher": "AgentestingMIA",
   "engines": {
     "vscode": "^1.102.0"
@@ -40,11 +40,11 @@
     "commands": [
       {
         "command": "Agentesting.showResultsPanel",
-  "title": "🤖 AgentestingMIA v33.0.0 - Diagnóstico Ejecución"
+  "title": "🤖 AgentestingMIA v34.0.0 - Diagnóstico Ejecución"
       },
       {
         "command": "Agentesting.showSetupGuide",
-  "title": "⚙️ AgentestingMIA v33.0.0: Setup API Key"
+  "title": "⚙️ AgentestingMIA v34.0.0: Setup API Key"
       }
     ],
     "configuration": {

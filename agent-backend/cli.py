@@ -1,10 +1,10 @@
+import sys
 print("[DIAGNOSTIC] cli.py iniciado. sys.argv:", sys.argv)
 
 """
 cli.py
 Punto de entrada OPTIMIZADO del backend. Inicialización rápida con lazy loading y cache.
 """
-import sys
 import os
 from indexer.workspace_indexer import WorkspaceIndexer
 from model.contextual_model import ContextualModel, safe_print
@@ -64,3 +64,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    print("[DIAGNOSTIC] cli.py iniciado. sys.argv:", sys.argv)
