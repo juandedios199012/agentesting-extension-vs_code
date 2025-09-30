@@ -1,3 +1,4 @@
+print("[DIAGNOSTIC] cli.py iniciado. sys.argv:", sys.argv)
 
 """
 cli.py
