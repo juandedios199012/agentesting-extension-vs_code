@@ -1,4 +1,5 @@
 import sys
+import os
 print("[DIAGNOSTIC] cli.py iniciado. sys.argv:", sys.argv)
 
 """
