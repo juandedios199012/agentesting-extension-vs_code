@@ -288,12 +288,25 @@ INSTRUCCIONES:
         # Buscar en el cache local la última respuesta relevante
         import re
         files = []
-        # Buscar la última respuesta que contenga 'ARCHIVO:'
+        # Buscar la última respuesta que contenga 'ARCHIVO:' o bloques de código java
         for key in reversed(list(self._response_cache.keys())):
             response = self._response_cache[key]
+            # Extraer archivos con formato ARCHIVO:
             matches = re.findall(r'ARCHIVO: ([^\n]+)\n```java\n([\s\S]+?)```', response)
             for file_path, code in matches:
                 files.append((file_path.strip(), code.strip()))
+            # Si no hay formato ARCHIVO, buscar bloques de código java y asignar nombres genéricos
+            if not files:
+                code_blocks = re.findall(r'```java\n([\s\S]+?)```', response)
+                # Nombres sugeridos por el usuario
+                suggested_names = [
+                    'CustomerInformationScreen.java',
+                    'ManageCustomerTask.java',
+                    'CustomerManagementStepDefinition.java'
+                ]
+                for i, code in enumerate(code_blocks):
+                    name = suggested_names[i] if i < len(suggested_names) else f'GeneratedClass{i+1}.java'
+                    files.append((f'src/test/{name}', code.strip()))
             if files:
                 break
         # Si no se encontró nada, fallback a ejemplo
