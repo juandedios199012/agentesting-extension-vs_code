@@ -38,7 +38,7 @@ class ContextualModel:
             # OPTIMIZACIÓN: Configuración más rápida para GPT-3.5-turbo
             self.llm = ChatOpenAI(
                 temperature=0.1,  # Menor temperatura = respuestas más rápidas y consistentes
-                model_name="gpt-4-turbo", 
+                model_name="gpt-4-turbo",
                 openai_api_key=openai_api_key,
                 max_tokens=500,  # Limitar tokens para respuestas más rápidas
                 request_timeout=15  # Timeout de 15 segundos
@@ -240,92 +240,133 @@ INSTRUCCIONES:
         return training
 
     def generate_response(self, prompt):
-        # Si está en modo demo (sin API key), guía al usuario a configurar
+        # 1. Modo demo: guía para configurar API key
         if self.demo_mode:
             return self._generate_setup_guidance(prompt)
 
-        # Detectar confirmación para crear archivos
+        # 2. Confirmación para crear archivos
         confirm_words = ['sí', 'si', 'procede', 'hazlo', 'crear', 'crea', 'ok', 'dale']
         if prompt.strip().lower() in confirm_words:
-            # Aquí deberías tener la lógica para crear los archivos sugeridos
-            # Simulación: crear archivos sugeridos en el último prompt
-            # En producción, deberías guardar el último prompt de sugerencia
             created_files = self._create_suggested_files()
             return f"✅ Archivos creados automáticamente:\n{created_files}"
 
         try:
-            # Caching local: si el prompt ya fue respondido, devolver respuesta cacheada
+            # 3. Cache local
             cache_key = prompt.strip().lower()
             if cache_key in self._response_cache:
                 return self._response_cache[cache_key]
 
-            # Si es automatización, agrega contexto especializado
+            # 4. Si es automatización, prepara contexto y ejemplos
             if self._is_automation_request(prompt):
-                final_message = f"{self._base_context}\n\nSOLICITUD: {prompt}"
+                import json
+                training_file = os.path.join(os.path.dirname(__file__), '..', 'training', 'training_data.json')
+                examples = []
+                if os.path.exists(training_file):
+                    with open(training_file, 'r', encoding='utf-8') as f:
+                        training_data = json.load(f)
+                        # Limitar a los 2 ejemplos más relevantes
+                        for ex in training_data.get('training_examples', [])[:2]:
+                            examples.append(f"### Ejemplo\nUsuario: {ex['prompt']}\nAsistente: {ex['response']}\n")
+                # Mensaje system con contexto y ejemplos
+                system_message = self._base_context + "\n\n" + "\n".join(examples)
+                messages = [
+                    HumanMessage(role="system", content=system_message),
+                    HumanMessage(role="user", content=prompt)
+                ]
             else:
-                # Para cualquier frase, solo envía el prompt al modelo
-                final_message = prompt
+                messages = [HumanMessage(content=prompt)]
 
-            messages = [HumanMessage(content=final_message)]
+            # 5. Mostrar mensajes enviados al modelo para depuración
+            safe_print("[DEBUG] Mensajes enviados al modelo:")
+            for msg in messages:
+                safe_print(f"Role: {getattr(msg, 'role', 'N/A')}, Content: {msg.content}")
+            # 6. Llamada a LangChain/OpenAI con roles explícitos
             response = self.llm.invoke(messages)
 
-            # Guardar interacción para aprendizaje futuro
+            # 6. Guardar interacción para aprendizaje futuro
             self._save_interaction(prompt, response.content if hasattr(response, 'content') else str(response))
 
-            if hasattr(response, 'content'):
-                result = response.content
-            else:
-                result = str(response)
-
-            # Guardar en cache local
+            # 7. Extracción robusta del resultado
+            result = response.content if hasattr(response, 'content') else str(response)
             self._response_cache[cache_key] = result
             return result
         except Exception as e:
+            # 8. Manejo de errores
             return f"Error al generar respuesta: {str(e)}"
 
     def _create_suggested_files(self):
         import re
         files = []
-        # Buscar la última respuesta relevante con código
-        for key in reversed(list(self._response_cache.keys())):
-            response = self._response_cache[key]
-            # Extraer pares nombre de archivo y bloque de código
-            # Busca todos los pares: - **NombreArchivo.java**\n```java\n...codigo...```
-            pairs = re.findall(r'- \*\*(\w+\.java)\*\*\s*```java\n([\s\S]+?)```', response)
-            for name, code in pairs:
-                files.append((f'src/test/{name}', code.strip()))
-            # Si no hay pares, buscar todos los bloques de código y asociar por orden con nombres detectados
-            if not files:
-                code_blocks = re.findall(r'```(?:java)?\n([\s\S]+?)```', response)
-                name_blocks = re.findall(r'- \*\*(\w+\.java)\*\*', response)
-                for i, code in enumerate(code_blocks):
-                    name = name_blocks[i] if i < len(name_blocks) else f'GeneratedClass{i+1}.java'
-                    files.append((f'src/test/{name}', code.strip()))
-            # Si aún no hay archivos, buscar clases Java en texto plano
+        # Usar SOLO la última respuesta relevante (último prompt)
+        if self._response_cache:
+            last_key = list(self._response_cache.keys())[-1]
+            response = self._response_cache[last_key]
+
+            # Extraer archivos Java, StepDefinition, Task, Feature
+            # Soporta: Archivo: Nombre.java\n```java\n...```, Archivo: Nombre.feature\n```feature\n...```
+            # Mejorar regex para soportar variantes y saltos de línea
+            file_blocks = re.findall(r'Archivo:\s*([\w/]+\.(java|feature))\s*```(java|feature)?\s*([\s\S]+?)```', response)
+            for name, ext, lang, code in file_blocks:
+                # Inferir carpeta destino por tipo de clase
+                folder = 'src/test/'
+                # Mejorar inferencia de carpeta por nombre de clase
+                if ext == 'java':
+                    if 'Screen' in name:
+                        folder = f'FlexBusinessMobile-test-ui-with-ai/src/test/java/activity/{name.replace("Screen.java","")}/'
+                    elif 'Task' in name:
+                        folder = 'FlexBusinessMobile-test-ui-with-ai/src/test/java/task/'
+                    elif 'StepDefinition' in name:
+                        folder = 'FlexBusinessMobile-test-ui-with-ai/src/test/java/runner/'
+                    elif 'Model' in name or 'VentaSugerida' in name or 'HistorialVentas' in name:
+                        folder = 'FlexBusinessMobile-test-ui-with-ai/src/test/java/model/'
+                    else:
+                        folder = 'FlexBusinessMobile-test-ui-with-ai/src/test/java/model/'
+                elif ext == 'feature':
+                    folder = 'FlexBusinessMobile-test-ui-with-ai/src/test/java/feature/'
+                # Validar contenido relevante
+                code_clean = code.strip()
+                if code_clean and len(code_clean) > 10:
+                    files.append((os.path.join(folder, name), code_clean))
+
+            # Si no hay archivos, buscar clases Java en texto plano
             if not files:
                 class_blocks = re.findall(r'(public class [A-Za-z0-9_]+[\s\S]+?\})', response)
                 for i, class_code in enumerate(class_blocks):
                     m = re.match(r'public class ([A-Za-z0-9_]+)', class_code)
                     name = f'{m.group(1)}.java' if m else f'GeneratedClass{i+1}.java'
-                    files.append((f'src/test/{name}', class_code.strip()))
-            if files:
-                break
+                    folder = 'FlexBusinessMobile-test-ui-with-ai/src/test/java/model/'
+                    code_clean = class_code.strip()
+                    if code_clean and len(code_clean) > 10:
+                        files.append((os.path.join(folder, name), code_clean))
+
+            # Si aún no hay archivos, buscar cualquier bloque 'class ... { ... }' y guardarlo
+            if not files:
+                generic_class_blocks = re.findall(r'(class [A-Za-z0-9_]+[\s\S]+?\})', response)
+                for i, class_code in enumerate(generic_class_blocks):
+                    m = re.match(r'class ([A-Za-z0-9_]+)', class_code)
+                    name = f'{m.group(1)}.java' if m else f'GeneratedClass{i+1}.java'
+                    folder = 'FlexBusinessMobile-test-ui-with-ai/src/test/java/model/'
+                    code_clean = class_code.strip()
+                    if code_clean and len(code_clean) > 10:
+                        files.append((os.path.join(folder, name), code_clean))
+
         # Si no se encontró nada, fallback a ejemplo vacío
         if not files:
             files = [
-                ('src/test/CustomerInformationScreen.java', 'public class CustomerInformationScreen {}'),
-                ('src/test/ManageCustomerTask.java', 'public class ManageCustomerTask {}'),
-                ('src/test/CustomerManagementStepDefinition.java', 'public class CustomerManagementStepDefinition {}'),
+                (os.path.join('FlexBusinessMobile-test-ui-with-ai/src/test/java/model/', 'CustomerInformationScreen.java'), 'public class CustomerInformationScreen {}'),
+                (os.path.join('FlexBusinessMobile-test-ui-with-ai/src/test/java/task/', 'ManageCustomerTask.java'), 'public class ManageCustomerTask {}'),
+                (os.path.join('FlexBusinessMobile-test-ui-with-ai/src/test/java/runner/', 'CustomerManagementStepDefinition.java'), 'public class CustomerManagementStepDefinition {}'),
             ]
         created = []
         for path, content in files:
             try:
-                os.makedirs(os.path.dirname(path), exist_ok=True)
-                with open(path, 'w', encoding='utf-8') as f:
+                norm_path = os.path.normpath(path)
+                os.makedirs(os.path.dirname(norm_path), exist_ok=True)
+                with open(norm_path, 'w', encoding='utf-8') as f:
                     f.write(content)
-                created.append(f"{path}")
+                created.append(f"{norm_path}")
             except Exception as e:
-                created.append(f"{path} (error: {e})")
+                created.append(f"{norm_path} (error: {e})")
         return '\n'.join(created)
     
     def _save_interaction(self, prompt, response):
@@ -406,7 +447,9 @@ Asegúrate de que tu API key comience con "sk-" y tenga suficiente crédito en t
             'automatizar', 'automatización', 'crear proyecto', 'crea', 'generar',
             'carrito', 'login', 'página', 'formulario', 'página de', 'app',
             'móvil', 'mobile', 'proyecto de', 'suite de pruebas', 'test',
-            'pruebas para', 'automatizar pruebas'
+            'pruebas para', 'automatizar pruebas',
+            # Nuevos: pluralizados y entidades comunes
+            'vendedores', 'clientes', 'productos', 'observaciones', 'promociones', 'entidades', 'pantallas', 'campos', 'cantidad', 'sucursal', 'nombre'
         ]
         prompt_lower = prompt.lower()
         return any(keyword in prompt_lower for keyword in automation_keywords)
