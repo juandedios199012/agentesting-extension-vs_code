@@ -267,8 +267,11 @@ INSTRUCCIONES:
                         # Limitar a los 2 ejemplos más relevantes
                         for ex in training_data.get('training_examples', [])[:2]:
                             examples.append(f"### Ejemplo\nUsuario: {ex['prompt']}\nAsistente: {ex['response']}\n")
-                # Mensaje system con contexto y ejemplos
-                system_message = self._base_context + "\n\n" + "\n".join(examples)
+                # Mensaje system con contexto y ejemplos, reforzando instrucción de respuesta
+                system_message = (
+                    self._base_context + "\n\n" + "\n".join(examples) +
+                    "\n\nIMPORTANTE: Responde únicamente con el código necesario para la automatización de la entidad solicitada en el prompt. NO incluyas ejemplos previos ni explicaciones."
+                )
                 messages = [
                     HumanMessage(role="system", content=system_message),
                     HumanMessage(role="user", content=prompt)
