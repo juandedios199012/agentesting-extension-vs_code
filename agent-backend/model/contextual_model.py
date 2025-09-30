@@ -284,14 +284,25 @@ INSTRUCCIONES:
             return f"Error al generar respuesta: {str(e)}"
 
     def _create_suggested_files(self):
-        # Simulación: crea archivos de ejemplo
-        # En producción, deberías usar la sugerencia previa y generar el código real
-        files = [
-            ('src/test/LoginScreen.java', 'public class LoginScreen {}'),
-            ('src/test/ProductScreen.java', 'public class ProductScreen {}'),
-            ('src/test/OrderScreen.java', 'public class OrderScreen {}'),
-            ('src/test/LoginStepDefinition.java', 'public class LoginStepDefinition {}'),
-        ]
+        # Extraer nombres y contenido de clases de la última respuesta generada
+        # Buscar en el cache local la última respuesta relevante
+        import re
+        files = []
+        # Buscar la última respuesta que contenga 'ARCHIVO:'
+        for key in reversed(list(self._response_cache.keys())):
+            response = self._response_cache[key]
+            matches = re.findall(r'ARCHIVO: ([^\n]+)\n```java\n([\s\S]+?)```', response)
+            for file_path, code in matches:
+                files.append((file_path.strip(), code.strip()))
+            if files:
+                break
+        # Si no se encontró nada, fallback a ejemplo
+        if not files:
+            files = [
+                ('src/test/CustomerInformationScreen.java', 'public class CustomerInformationScreen {}'),
+                ('src/test/ManageCustomerTask.java', 'public class ManageCustomerTask {}'),
+                ('src/test/CustomerManagementStepDefinition.java', 'public class CustomerManagementStepDefinition {}'),
+            ]
         created = []
         for path, content in files:
             try:
