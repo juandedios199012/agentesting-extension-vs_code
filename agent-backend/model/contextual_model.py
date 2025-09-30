@@ -289,20 +289,22 @@ INSTRUCCIONES:
         # Buscar la última respuesta relevante con código
         for key in reversed(list(self._response_cache.keys())):
             response = self._response_cache[key]
-            # Extraer bloques de código markdown (```java ... ``` y ``` ... ```)
-            code_blocks = re.findall(r'```(?:java)?\n([\s\S]+?)```', response)
-            # Extraer nombres sugeridos en la respuesta (por ejemplo, **NombreArchivo.java**)
-            name_blocks = re.findall(r'- \*\*(\w+\.java)\*\*', response)
-            # Si hay bloques y nombres, los empareja
-            for i, code in enumerate(code_blocks):
-                name = name_blocks[i] if i < len(name_blocks) else f'GeneratedClass{i+1}.java'
+            # Extraer pares nombre de archivo y bloque de código
+            # Busca todos los pares: - **NombreArchivo.java**\n```java\n...codigo...```
+            pairs = re.findall(r'- \*\*(\w+\.java)\*\*\s*```java\n([\s\S]+?)```', response)
+            for name, code in pairs:
                 files.append((f'src/test/{name}', code.strip()))
-            # Si no hay bloques markdown, buscar clases Java en texto plano
+            # Si no hay pares, buscar todos los bloques de código y asociar por orden con nombres detectados
             if not files:
-                # Busca todas las declaraciones de clase Java
+                code_blocks = re.findall(r'```(?:java)?\n([\s\S]+?)```', response)
+                name_blocks = re.findall(r'- \*\*(\w+\.java)\*\*', response)
+                for i, code in enumerate(code_blocks):
+                    name = name_blocks[i] if i < len(name_blocks) else f'GeneratedClass{i+1}.java'
+                    files.append((f'src/test/{name}', code.strip()))
+            # Si aún no hay archivos, buscar clases Java en texto plano
+            if not files:
                 class_blocks = re.findall(r'(public class [A-Za-z0-9_]+[\s\S]+?\})', response)
                 for i, class_code in enumerate(class_blocks):
-                    # Intenta extraer el nombre de la clase
                     m = re.match(r'public class ([A-Za-z0-9_]+)', class_code)
                     name = f'{m.group(1)}.java' if m else f'GeneratedClass{i+1}.java'
                     files.append((f'src/test/{name}', class_code.strip()))
